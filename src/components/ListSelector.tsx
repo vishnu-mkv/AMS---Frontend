@@ -12,36 +12,47 @@ import { Button } from "./ui/Button";
 import { DropdownMenuCheckboxItemProps } from "@radix-ui/react-dropdown-menu";
 import { Checkbox } from "./ui/checkbox";
 
-interface ListSelectorProps<T> {
-  allowSelect?: boolean;
+interface ListSelectorPropsWithSelect<T> {
+  allowSelect: true;
+  onSelect: (item: T[]) => void;
+  selectedItems: T[];
+  isEqual: (x: T, y: T) => boolean;
+  mode?: "single" | "multiple";
+}
 
-  onSelect?: (item: T[]) => void;
+interface ListSelectorPropsWithoutSelect {
+  allowSelect: false;
+}
+
+export type ListSelectorProps<T> = {
   items: T[];
   renderItem: (item: T) => React.ReactNode;
-  selectedItems: T[];
-}
+} & (ListSelectorPropsWithSelect<T> | ListSelectorPropsWithoutSelect);
 
 type Checked = DropdownMenuCheckboxItemProps["checked"];
 
-function ListSelector<T>({
-  allowSelect = true,
-  onSelect = ([]) => {},
-  selectedItems,
-  ...props
-}: ListSelectorProps<T>) {
+function ListSelector<T>(props: ListSelectorProps<T>) {
+  const { allowSelect, items, renderItem } = props;
+
+  const onSelect = allowSelect ? props.onSelect : () => {};
+  const selectedItems = allowSelect ? props.selectedItems : ([] as T[]);
+  const mode = allowSelect ? props.mode : "multiple";
+
   const [itemsToShow, setItemsToShow] = useState<T[]>(props.items);
   const [showSelected, setShowSelected] = useState<Checked>(false);
 
   useEffect(() => {
-    if (showSelected) {
+    if (showSelected && allowSelect === true) {
       setItemsToShow(selectedItems);
     } else {
-      setItemsToShow(props.items);
+      setItemsToShow(items);
     }
-  }, [showSelected, selectedItems, props.items]);
+  }, [showSelected, items]);
 
   useEffect(() => {
-    if (onSelect) onSelect(selectedItems);
+    if (allowSelect) {
+      props.onSelect(props.selectedItems);
+    }
   }, [selectedItems, onSelect]);
 
   return (
@@ -68,7 +79,7 @@ function ListSelector<T>({
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => {
-                  onSelect([...props.items]);
+                  onSelect([...items]);
                 }}
               >
                 Select All
@@ -88,17 +99,21 @@ function ListSelector<T>({
         <div key={index} className="flex items-center space-x-2">
           {allowSelect && (
             <Checkbox
-              checked={selectedItems.includes(item)}
+              checked={selectedItems.some((x) => props.isEqual(x, item))}
               onCheckedChange={(e) => {
                 if (e) {
-                  onSelect([...selectedItems, item]);
+                  onSelect(
+                    mode === "single" ? [item] : [...selectedItems, item]
+                  );
                 } else {
-                  onSelect(selectedItems.filter((i) => i !== item));
+                  onSelect(
+                    selectedItems.filter((i) => !props.isEqual(i, item))
+                  );
                 }
               }}
             />
           )}
-          <div className="grow">{props.renderItem(item)}</div>
+          <div className="grow">{renderItem(item)}</div>
         </div>
       ))}
     </div>

@@ -52,7 +52,7 @@ export function encodeArray(
   paramName: string
 ): { [key: string]: any } {
   return array.reduce((acc, curr, index) => {
-    acc += `${paramName}[]=${curr}` + (index === array.length - 1 ? "" : "&");
+    acc += `${paramName}=${curr}` + (index === array.length - 1 ? "" : "&");
     return acc;
   }, "");
 }
@@ -62,7 +62,8 @@ export function buildQuery(
 ) {
   return Object.keys(searchParams).reduce((acc, curr, index) => {
     const value = searchParams[curr];
-    if (!value || value?.length === 0) return acc;
+    if (value === null || value === undefined || value?.length === 0)
+      return acc;
     if (Array.isArray(value)) {
       acc += encodeArray(value, curr);
     } else {
@@ -128,4 +129,21 @@ export function checkIfUserHasPermission(
         );
 
   return isAdmin || result;
+}
+
+// input : array of number
+// day names corresponding to the numbers
+// full day names
+
+export function getDayNames(days: number[]): string[] {
+  const dayNames = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+  return days.map((day) => dayNames[day]);
 }

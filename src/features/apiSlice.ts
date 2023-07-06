@@ -38,6 +38,6 @@ const baseQueryExtended = async (
 
 export const apiSlice = createApi({
   baseQuery: baseQueryExtended,
-  tagTypes: ["Users"],
+  tagTypes: ["Users", "Roles", "Groups", "Schedules", "Topics", "Sessions"],
   endpoints: (builder) => ({}),
 });

@@ -25,6 +25,7 @@ export interface Role {
   name: string;
   description: string;
   permissions: Permission[];
+  color: string | null;
 }
 
 export interface GroupSummary {
@@ -34,6 +35,11 @@ export interface GroupSummary {
   groupType: GroupType;
   disabled: boolean;
   scheduleId: string;
+}
+
+export interface Group extends GroupSummary {
+  groups: GroupSummary[];
+  users: UserSummary[];
 }
 
 export interface User {
@@ -51,7 +57,7 @@ export interface User {
   scheduleId: string | null;
 }
 
-export type roleSummary = Pick<Role, "id" | "name" | "description">;
+export type roleSummary = Pick<Role, "id" | "name" | "description" | "color">;
 
 export type UserSummary = Pick<
   User,
@@ -64,6 +70,8 @@ export interface PaginatedQuery {
   page: number;
   limit: number;
   order: "asc" | "desc";
+  search?: string;
+  sort?: "createdAt" | "name";
 }
 
 export interface PaginatedResponse<T> {
@@ -77,6 +85,10 @@ export interface PaginatedResponse<T> {
 }
 
 export interface UsersQuery extends PaginatedQuery {
-  search?: string;
-  sort?: "createdAt" | "name";
+  roles?: string[];
+}
+
+export interface GroupsQuery extends PaginatedQuery {
+  scheduleId?: string[];
+  groupType?: GroupType;
 }

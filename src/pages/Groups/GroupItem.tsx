@@ -1,0 +1,61 @@
+import { GroupSummary } from "@/interfaces/user";
+import { toTitleCase } from "@/lib/utils";
+import { MoreHorizontal } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "../../components/ui/dropdown-menu";
+import { Link } from "react-router-dom";
+import { Badge } from "@/components/ui/Badge";
+
+interface GroupItemProps {
+  group: GroupSummary;
+}
+
+function GroupItem({ group }: GroupItemProps) {
+  return (
+    <div className="bg-terinary rounded-sm flex p-3 px-5 gap-10 w-full items-center min-w-[400px]">
+      <div
+        className="rounded-full w-10 h-10 bg-bgs"
+        style={
+          group.color
+            ? {
+                backgroundColor: group.color,
+              }
+            : {}
+        }
+      ></div>
+      <div className="space-y-2 my-1">
+        <Link to={`/roles/${group.id}`}>
+          <span className="text-gray-700">{toTitleCase(group.name)}</span>
+        </Link>
+        <div>
+          <Badge variant={"secondary"}>
+            {group.groupType === 0 ? "Group of Users" : "Group of Groups"}
+          </Badge>
+        </div>
+      </div>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild className="ml-auto">
+          <MoreHorizontal className="cursor-pointer h-5 w-5"></MoreHorizontal>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>
+            <Link to={`/roles/${group.id}`}>View</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link to={`/roles/${group.id}/edit`}>Edit</Link>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+}
+
+export default GroupItem;

@@ -1,13 +1,14 @@
 import ListSelector from "@/components/ListSelector";
 import Loading from "@/components/Loading";
 import Pagination from "@/components/Pagination";
-import UserItem from "@/pages/Users/UserItem";
+import GroupItem from "@/pages/Groups/GroupItem";
 import { ErrorMessage } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import DebouncedInput from "@/components/ui/DebouncedInput";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -20,53 +21,57 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { useListUsersQuery } from "@/features/api/usersSlics";
-import { UserSummary, UsersQuery, roleSummary } from "@/interfaces/user";
+import { GroupSummary, GroupsQuery } from "@/interfaces/user";
 import { Filter } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ListProps } from "@/interfaces/common";
 import MultiSelector from "@/components/MultiSelector";
-import RoleList from "../Roles/RoleList";
+import { useListGroupsQuery } from "@/features/api/groupSlice";
+import { ScheduleSummary } from "@/interfaces/schedule";
+import ScheduleList from "../Schedules/ScheduleList";
+import { DialogClose } from "@radix-ui/react-dialog";
 
-type UserListProps = ListProps<UserSummary>;
+type GroupListProps = ListProps<GroupSummary>;
 
-function UserList(props: UserListProps) {
+function GroupList(props: GroupListProps) {
   const { allowSelect } = props;
-  const [query, setQuery] = useState<UsersQuery>({
+  const [query, setQuery] = useState<GroupsQuery>({
     page: 1,
     limit: 5,
     sort: "createdAt",
     order: "desc",
     search: "",
-    roles: [],
+    scheduleId: [],
   });
-  const [selectedRoles, setSelectedRoles] = useState<roleSummary[]>([]);
-  const [selectedUsers, setSelectedUsers] = useState<UserSummary[]>(
-    allowSelect ? props.selectedItems : ([] as UserSummary[])
+  const [selectedSchedules, setSelectedSchedules] = useState<ScheduleSummary[]>(
+    []
   );
-  const { data: users, isLoading, error } = useListUsersQuery(query);
+  const [selectedGroups, setSelectedGroups] = useState<GroupSummary[]>(
+    allowSelect ? props.selectedItems : ([] as GroupSummary[])
+  );
+  const { data: groups, isLoading, error } = useListGroupsQuery(query);
 
   useEffect(() => {
     setQuery({
       ...query,
-      roles: selectedRoles.map((role) => role.id),
+      scheduleId: selectedSchedules.map((schedule) => schedule.id),
     });
-  }, [selectedRoles]);
+  }, [selectedSchedules]);
 
   return (
     <div className="space-y-7 max-w-[600px] mx-auto">
       <Header
-        title={allowSelect ? "Select Users" : "Users"}
+        title={allowSelect ? "Select Groups" : "Groups"}
         subtitle={
           allowSelect
-            ? "Choose users to for this action"
-            : "All users are listed here"
+            ? "Choose groups to for this action"
+            : "All groups are listed here"
         }
       ></Header>
 
       <div className="flex justify-between gap-4">
         <DebouncedInput
-          placeholder="Search users by name "
+          placeholder="Search groups by name "
           onValueChange={(value) => {
             setQuery({ ...query, search: value });
           }}
@@ -79,13 +84,12 @@ function UserList(props: UserListProps) {
           </DialogTrigger>
           <DialogContent className="!max-w-[400px] space-y-6">
             <DialogTitle>
-              <p>Filter users and more</p>
+              <p>Filter groups and more</p>
             </DialogTitle>
             <div className="space-y-4">
               <Label>Sort By</Label>
               <Select
                 onValueChange={(value) => {
-                  console.log(value);
                   setQuery({ ...query, sort: value as any });
                 }}
                 value={query.sort}
@@ -95,7 +99,6 @@ function UserList(props: UserListProps) {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="createdAt">Created At</SelectItem>
-
                   <SelectItem value="name">Name</SelectItem>
                 </SelectContent>
               </Select>
@@ -114,43 +117,77 @@ function UserList(props: UserListProps) {
                 </SelectContent>
               </Select>
             </div>
-            <MultiSelector<roleSummary>
-              selectedItems={selectedRoles}
-              label={"Roles"}
+            <div className="space-y-4">
+              <Label>Group Type</Label>
+              <Select
+                onValueChange={(value) => {
+                  console.log(value);
+                  setQuery({
+                    ...query,
+                    groupType:
+                      value === "0" || value === "1"
+                        ? parseInt(value)
+                        : undefined,
+                  });
+                }}
+                value={
+                  query.groupType !== undefined
+                    ? query.groupType.toString()
+                    : "-1"
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose Group Type"></SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="-1">All</SelectItem>
+                  <SelectItem value="0">Group of Users</SelectItem>
+                  <SelectItem value="1">Group of Groups</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <MultiSelector<ScheduleSummary>
+              selectedItems={selectedSchedules}
+              label={"Schedules"}
               renderItem={(role) => (
                 <p className="text-gray-600 text-sm">{role.name}</p>
               )}
-              setSelectedItems={setSelectedRoles}
+              setSelectedItems={setSelectedSchedules}
               dialogContent={
-                <RoleList
+                <ScheduleList
                   allowSelect={true}
-                  onSelect={setSelectedRoles}
-                  selectedItems={selectedRoles}
+                  onSelect={setSelectedSchedules}
+                  selectedItems={selectedSchedules}
                 />
               }
             ></MultiSelector>
+            <DialogFooter>
+              <DialogClose>
+                <Button variant={"outline"}>Close</Button>
+              </DialogClose>
+            </DialogFooter>
           </DialogContent>
         </Dialog>
       </div>
       {isLoading && <Loading />}
-      {error && <ErrorMessage error={error} title="Couldn't Fetch users" />}
-      {users && (
-        <ListSelector<UserSummary>
+      {error && <ErrorMessage error={error} title="Couldn't Fetch groups" />}
+      {groups && (
+        <ListSelector<GroupSummary>
           allowSelect={allowSelect || false}
-          onSelect={(users) => {
-            setSelectedUsers(users);
+          onSelect={(group) => {
+            setSelectedGroups(group);
           }}
-          items={users.docs}
-          renderItem={(user) => <UserItem user={user} />}
-          selectedItems={selectedUsers}
+          items={groups.docs}
+          renderItem={(group) => <GroupItem group={group} />}
+          selectedItems={selectedGroups}
           isEqual={(x, y) => x.id === y.id}
           mode={props.allowSelect ? props.mode : "multiple"}
         ></ListSelector>
       )}
       {
         <Pagination
-          page={users?.page || 1}
-          totalPages={users?.totalPages || 1}
+          page={groups?.page || 1}
+          totalPages={groups?.totalPages || 1}
           setPage={(page) => {
             setQuery({ ...query, page });
           }}
@@ -162,10 +199,10 @@ function UserList(props: UserListProps) {
           <Button
             onClick={() => {
               if (allowSelect) {
-                props.onSelect(selectedUsers);
+                props.onSelect(selectedGroups);
               }
             }}
-            disabled={selectedUsers.length === 0}
+            disabled={selectedGroups.length === 0}
             variant={"default"}
           >
             Select
@@ -176,4 +213,4 @@ function UserList(props: UserListProps) {
   );
 }
 
-export default UserList;
+export default GroupList;

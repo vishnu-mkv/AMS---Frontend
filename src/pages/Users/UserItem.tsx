@@ -1,5 +1,5 @@
 import { UserSummary } from "@/interfaces/user";
-import { UserAvatar } from "./Profile";
+import { UserAvatar } from "../../components/Profile";
 import { toTitleCase } from "@/lib/utils";
 import { MoreHorizontal } from "lucide-react";
 import {
@@ -9,9 +9,9 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-} from "./ui/dropdown-menu";
+} from "../../components/ui/dropdown-menu";
 import { Link } from "react-router-dom";
-import { Badge } from "./ui/Badge";
+import { Badge } from "../../components/ui/Badge";
 
 interface UserItemProps {
   user: UserSummary;
@@ -19,19 +19,21 @@ interface UserItemProps {
 
 function UserItem({ user }: UserItemProps) {
   return (
-    <div className="bg-secondary/50 rounded-sm flex p-3 px-5 gap-10 w-full items-center">
+    <div className="bg-terinary rounded-sm flex p-3 px-5 gap-10 w-full items-center min-w-[400px]">
       <UserAvatar
         user={user}
         size="md"
-        className="rounded-none w-16 rounded-l-sm -mx-5 -my-3 h-[5.5rem]"
+        className="rounded-full w-16 h-16"
       ></UserAvatar>
-      <div className="space-y-3 my-1">
-        <span className="text-gray-700">
-          {toTitleCase(user.firstName + " " + user.lastName)}
-        </span>
+      <div className="space-y-2 my-1">
+        <Link to={`/users/${user.id}`}>
+          <span className="text-gray-700">
+            {toTitleCase(user.firstName + " " + user.lastName)}
+          </span>
+        </Link>
         <div className="flex gap-2 flex-wrap grow">
           {user.roles.map((role, index) => (
-            <Badge key={index} variant="default">
+            <Badge key={index} variant="secondary">
               {role.name}
             </Badge>
           ))}
@@ -42,10 +44,13 @@ function UserItem({ user }: UserItemProps) {
           <MoreHorizontal className="cursor-pointer h-5 w-5"></MoreHorizontal>
         </DropdownMenuTrigger>
         <DropdownMenuContent>
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
-            <Link to={`${user.id}/edit`}>Edit</Link>
+            <Link to={`/users/${user.id}`}>View</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link to={`/users/${user.id}/edit`}>Edit</Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

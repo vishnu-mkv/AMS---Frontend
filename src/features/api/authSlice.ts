@@ -1,4 +1,4 @@
-import { User } from "@/interfaces/user";
+import { User, roleSummary } from "@/interfaces/user";
 import { apiSlice } from "../apiSlice";
 
 export const authApiSlice = apiSlice.injectEndpoints({
@@ -13,8 +13,18 @@ export const authApiSlice = apiSlice.injectEndpoints({
         body: credentials,
       }),
     }),
+    listRoles: builder.query<roleSummary[], void>({
+      query: () => "/auth/roles",
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: "Roles" as const, id })),
+              { type: "Roles", id: "LIST" },
+            ]
+          : [{ type: "Roles", id: "LIST" }],
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useLoginMutation } = authApiSlice;
+export const { useLoginMutation, useListRolesQuery } = authApiSlice;
