@@ -10,7 +10,8 @@ import RoleList from "./pages/Roles/RoleList";
 import GroupList from "./pages/Groups/GroupList";
 import ScheduleList from "./pages/Schedules/ScheduleList";
 import TopicList from "./pages/Topics/TopicList";
-import SessionSelector from "./pages/Attendance/SessionSelector";
+import AttendanceTaker from "./pages/Attendance/AttendanceTaker";
+import RecordView from "./pages/Records/RecordView";
 
 const router = createBrowserRouter([
   {
@@ -54,7 +55,21 @@ const router = createBrowserRouter([
       },
       {
         path: "attendance",
-        element: <SessionSelector />,
+        children: [
+          {
+            index: true,
+            element: <AttendanceTaker />,
+          },
+        ],
+      },
+      {
+        path: "records",
+        children: [
+          {
+            index: true,
+            element: <RecordView />,
+          },
+        ],
       },
     ],
   },

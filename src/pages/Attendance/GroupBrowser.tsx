@@ -121,7 +121,10 @@ function GroupBrowser({
           const g = groups[gId];
           if (!g) return null;
           return (
-            <div key={g.id} className="flex items-center text-sm text-gray-500">
+            <div
+              key={"path" + g.id}
+              className="flex items-center text-sm text-gray-500"
+            >
               <ChevronRight size={16}></ChevronRight>
               <Button
                 variant="link"
@@ -147,7 +150,7 @@ function GroupBrowser({
       {groupAccessPathIds.length === 0 && (
         <div className="flex flex-col gap-1">
           {session.groups.map((g) => (
-            <GroupItem group={g} onClick={goToGroup}></GroupItem>
+            <GroupItem group={g} onClick={goToGroup} key={g.id}></GroupItem>
           ))}
         </div>
       )}
@@ -187,10 +190,16 @@ function GroupRender({
       <div className="flex flex-col gap-3">
         {group.groupType === 1 &&
           group.groups.map((g) => (
-            <GroupItem group={g} onClick={goToGroup}></GroupItem>
+            <GroupItem
+              group={g}
+              onClick={goToGroup}
+              key={"grouprender-" + g.id}
+            ></GroupItem>
           ))}
         {group.groupType === 0 &&
-          group.users.map((u) => <UserItem user={u}></UserItem>)}
+          group.users.map((u) => (
+            <UserItem user={u} key={"grouprender-" + u.id}></UserItem>
+          ))}
       </div>
     </div>
   );

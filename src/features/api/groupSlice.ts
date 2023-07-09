@@ -1,11 +1,7 @@
-import {
-  Group,
-  GroupSummary,
-  GroupsQuery,
-  PaginatedResponse,
-} from "@/interfaces/user";
+import { Group, GroupSummary, GroupsQuery } from "@/interfaces/user";
 import { apiSlice } from "../apiSlice";
 import { buildQuery } from "@/lib/utils";
+import { PaginatedResponse } from "@/interfaces/common";
 
 export const groupApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({

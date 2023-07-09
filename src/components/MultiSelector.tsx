@@ -24,12 +24,12 @@ function MultiSelector<T>(props: MultiSelectorProps<T>) {
   const { label, dialogContent, renderItem, mode } = props;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-5 overflow-hidden">
       <Label>{label}</Label>
       <div className="flex gap-5 justify-between items-strech">
         <Dialog>
           <DialogTrigger asChild>
-            <div className="flex flex-wrap gap-3 items-center grow  border border-input bg-slate-100 rounded-md p-2 cursor-pointer">
+            <div className="max-w-[calc(100%-70px)] flex flex-wrap gap-3 items-center grow  border border-input bg-slate-100 rounded-md p-2 cursor-pointer">
               {(!mode || mode === "multiple") &&
                 props.selectedItems.map((item, index) => (
                   <div
@@ -47,7 +47,7 @@ function MultiSelector<T>(props: MultiSelectorProps<T>) {
                           )
                         );
                       }}
-                      className="p-1"
+                      className="p-1 flex-shrink-0"
                     >
                       <XIcon className="text-red-400 w-4 h-4"></XIcon>
                     </Button>

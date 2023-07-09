@@ -6,3 +6,21 @@ type ListPropsWithSelect<T> = {
 };
 
 export type ListProps<T> = ListPropsWithSelect<T> | { allowSelect?: false };
+
+export interface PaginatedQuery {
+  page?: number;
+  limit?: number;
+  order?: "asc" | "desc";
+  search?: string;
+  sort?: "createdAt" | "name";
+}
+
+export interface PaginatedResponse<T> {
+  docs: T[];
+  totalPages: number;
+  totalCount: number;
+  page: number;
+  limit: number;
+  hasPrevious: boolean;
+  hasNext: boolean;
+}

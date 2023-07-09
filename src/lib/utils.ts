@@ -17,6 +17,10 @@ export function getFormData(event: FormEvent): any {
 
 export function getErrorMessage(error: any): string {
   const obj = error?.data?.error;
+  const errorObj = error?.data;
+
+  if (Array.isArray(errorObj)) return errorObj[0].errorMessage;
+
   if (obj === undefined)
     return error?.data?.message || error?.message || error?.status;
   const message = obj[Object.keys(obj)[0]];
@@ -58,14 +62,28 @@ export function encodeArray(
 }
 
 export function buildQuery(
-  searchParams: { [key: string]: string | string[] } | any
+  searchParams:
+    | {
+        [key: string]: string | string[] | Date;
+      }
+    | any
 ) {
   return Object.keys(searchParams).reduce((acc, curr, index) => {
     const value = searchParams[curr];
-    if (value === null || value === undefined || value?.length === 0)
+    if (
+      value === null ||
+      value === undefined ||
+      (!(value instanceof Date) && value?.length) === 0
+    )
       return acc;
     if (Array.isArray(value)) {
       acc += encodeArray(value, curr);
+    } else if (
+      // if  value is a date
+      // convert to iso string
+      value instanceof Date
+    ) {
+      acc += `${curr}=${value.toISOString()}`;
     } else {
       acc += `${curr}=${value}`;
     }

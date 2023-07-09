@@ -32,7 +32,7 @@ export function getTime(timeSlot: TimeSlot): string {
   return `${parseTime(timeSlot.startTime)} - ${parseTime(timeSlot.endTime)}`;
 }
 
-interface Slot {
+export interface Slot {
   id: string;
   timeSlotId: string;
   day: Day;
@@ -52,5 +52,5 @@ export interface Session extends SessionSummary {
 
 export interface Schedule extends ScheduleSummary {
   timeSlots: TimeSlot[];
-  sessions: SessionSummary[];
+  sessions: Session[];
 }

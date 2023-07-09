@@ -1,3 +1,5 @@
+import { PaginatedQuery } from "./common";
+
 enum Gender {
   "MALE" = 0,
   "FEMALE" = 1,
@@ -65,24 +67,6 @@ export type UserSummary = Pick<
 > & {
   roles: roleSummary[];
 };
-
-export interface PaginatedQuery {
-  page: number;
-  limit: number;
-  order: "asc" | "desc";
-  search?: string;
-  sort?: "createdAt" | "name";
-}
-
-export interface PaginatedResponse<T> {
-  docs: T[];
-  totalPages: number;
-  totalCount: number;
-  page: number;
-  limit: number;
-  hasPrevious: boolean;
-  hasNext: boolean;
-}
 
 export interface UsersQuery extends PaginatedQuery {
   roles?: string[];

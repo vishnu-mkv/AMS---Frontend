@@ -1,6 +1,7 @@
-import { PaginatedResponse, UserSummary, UsersQuery } from "@/interfaces/user";
+import { UserSummary, UsersQuery } from "@/interfaces/user";
 import { apiSlice } from "../apiSlice";
 import { buildQuery } from "@/lib/utils";
+import { PaginatedResponse } from "@/interfaces/common";
 
 export const usersApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({

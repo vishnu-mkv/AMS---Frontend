@@ -11,6 +11,7 @@ import {
 } from "../../components/ui/dropdown-menu";
 import { Link } from "react-router-dom";
 import { Badge } from "@/components/ui/Badge";
+import ColorAvatar from "@/components/ColorAvatar";
 
 interface GroupItemProps {
   group: GroupSummary;
@@ -19,16 +20,7 @@ interface GroupItemProps {
 function GroupItem({ group }: GroupItemProps) {
   return (
     <div className="bg-terinary rounded-sm flex p-3 px-5 gap-10 w-full items-center min-w-[400px]">
-      <div
-        className="rounded-full w-10 h-10 bg-bgs"
-        style={
-          group.color
-            ? {
-                backgroundColor: group.color,
-              }
-            : {}
-        }
-      ></div>
+      <ColorAvatar color={group.color}></ColorAvatar>
       <div className="space-y-2 my-1">
         <Link to={`/roles/${group.id}`}>
           <span className="text-gray-700">{toTitleCase(group.name)}</span>
