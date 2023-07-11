@@ -15,7 +15,7 @@ export type SessionQueryState = {
   groups?: Group[];
   groupAccessPath?: Group[];
   dateMode: "single" | "range";
-  date?: Date[];
+  date?: (Date | undefined)[];
 };
 
 const defaultState: SessionQueryState = {

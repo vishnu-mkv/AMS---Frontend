@@ -7,13 +7,14 @@ import {
   RecordSummary,
   updateAttendance,
   AddAttendance,
+  RecordWithoutEntries,
 } from "@/interfaces/attendance";
 import { buildQuery } from "@/lib/utils";
 
 export const attendanceApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     listAttendance: builder.query<
-      PaginatedResponse<RecordSummary>,
+      PaginatedResponse<RecordWithoutEntries>,
       AttendanceQuery
     >({
       query: (query) => ({

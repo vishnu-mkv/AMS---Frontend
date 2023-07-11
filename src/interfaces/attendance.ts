@@ -11,7 +11,7 @@ export interface AttendanceStatus {
 }
 
 export interface AttendanceQuery extends PaginatedQuery {
-  scheduleId?: string[];
+  scheduleId?: string;
   RecordedForDate?: string;
   sessionId?: string[];
   timeSlotId?: string[];
@@ -19,6 +19,7 @@ export interface AttendanceQuery extends PaginatedQuery {
   attendanceTakerId?: string;
   StartDate?: string;
   EndDate?: string;
+  topicId?: string[];
 }
 
 export interface RecordSummary {
@@ -28,6 +29,16 @@ export interface RecordSummary {
   created: Date;
   group: GroupSummary;
   scheduleId: string;
+  slot: Slot;
+}
+
+export interface RecordWithoutEntries {
+  id: string;
+  recordedFor: string;
+  schedule: ScheduleSummary;
+  created: string;
+  session: Omit<SessionSummary, "slots">;
+  group: GroupSummary;
   slot: Slot;
 }
 

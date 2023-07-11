@@ -77,7 +77,7 @@ function _AttendanceRecorder({
     groupId: [groups[0].id],
     RecordedForDate: moment(date).format("YYYY-MM-DD"),
     timeSlotId: [timeSlots[0].id],
-    scheduleId: [schedule.id],
+    scheduleId: schedule.id,
   });
 
   const [attendanceId, setAttendanceId] = useState<string>("");

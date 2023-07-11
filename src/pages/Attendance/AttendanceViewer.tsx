@@ -60,41 +60,50 @@ function AttendanceViewer(props: AttendanceViewerProps) {
                 {toTitleCase(u.firstName + " " + u.lastName)}
               </h1>
             </div>
-            <Select
-              value={record?.attendanceStatusId}
-              onValueChange={(value) => {
-                if (props.mode !== "edit") return;
-                const newRecords = structuredClone(props.attendance);
-                let record = newRecords.find((r) => r.user.id === u.id);
-                if (!record) {
-                  record = {
-                    user: u,
-                    attendanceStatusId: value,
-                    id: Date.now().toString(),
-                  };
-                  newRecords.push(record);
-                }
+            {props.mode === "edit" && (
+              <Select
+                value={record?.attendanceStatusId}
+                onValueChange={(value) => {
+                  if (props.mode !== "edit") return;
+                  const newRecords = structuredClone(props.attendance);
+                  let record = newRecords.find((r) => r.user.id === u.id);
+                  if (!record) {
+                    record = {
+                      user: u,
+                      attendanceStatusId: value,
+                      id: Date.now().toString(),
+                    };
+                    newRecords.push(record);
+                  }
 
-                record.attendanceStatusId = value;
-
-                console.log(newRecords);
-                props.onChanges(newRecords);
-              }}
-            >
-              <SelectTrigger
-                className="w-[200px] ml-auto"
-                disabled={props.mode !== "edit"}
+                  record.attendanceStatusId = value;
+                  props.onChanges(newRecords);
+                }}
               >
-                <SelectValue placeholder="Select Status"></SelectValue>
-              </SelectTrigger>
-              <SelectContent>
-                {attendanceStatus?.map((s) => (
-                  <SelectItem key={`${u.id} - ${s.id}`} value={s.id}>
-                    {s.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+                <SelectTrigger
+                  className="w-[200px] ml-auto"
+                  disabled={props.mode !== "edit"}
+                >
+                  <SelectValue placeholder="Select Status"></SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  {attendanceStatus?.map((s) => (
+                    <SelectItem key={`${u.id} - ${s.id}`} value={s.id}>
+                      {s.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+            {props.mode === "view" && (
+              <div className="p-1 px-6 rounded-sm bg-slate-100 text-slate-800">
+                {
+                  attendanceStatus?.find(
+                    (s) => s.id === record?.attendanceStatusId
+                  )?.name
+                }
+              </div>
+            )}
           </div>
         );
       })}

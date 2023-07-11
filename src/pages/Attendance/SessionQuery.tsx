@@ -32,9 +32,7 @@ export type SessionQueryProps = {
   forAttendanceRecording?: boolean;
 };
 
-function SessionQuery({
-  forAttendanceRecording: userAccessSessionOnly,
-}: SessionQueryProps) {
+function SessionQuery({ forAttendanceRecording }: SessionQueryProps) {
   const [userAtom] = useAtom(authAtom);
   const { state, setState } = useSessionQuery();
   const {
@@ -85,7 +83,7 @@ function SessionQuery({
   }, [schedule, timeSlots, date, topics]);
 
   const canAttendanceForSession = useMemo(() => {
-    if (!userAccessSessionOnly || !sessions) return true;
+    if (!forAttendanceRecording || !sessions) return true;
     return sessions[0].attendanceTakers.some(
       (at) => at.id === userAtom.user?.id
     );
@@ -121,7 +119,7 @@ function SessionQuery({
               <span className="text-gray-700">{schedule.name}</span>
             )}
             selectedItem={schedule}
-            mode="single"
+            mode={"single"}
           ></MultiSelector>
           {scheduleData && (
             <>
@@ -205,7 +203,7 @@ function SessionQuery({
                       <span className="text-gray-700">{topic.name}</span>
                     )}
                     selectedItem={topics?.at(0)}
-                    mode="single"
+                    mode={"single"}
                   ></MultiSelector>
                   <MultiSelector<Session>
                     dialogContent={

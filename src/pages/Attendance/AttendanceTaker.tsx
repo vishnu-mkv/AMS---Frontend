@@ -38,7 +38,6 @@ function AttendanceSessionSelector({
   } = queryState;
 
   function handleGo() {
-    console.log(queryState);
     if (
       !schedule ||
       !timeSlot ||

@@ -36,6 +36,7 @@ export interface Slot {
   id: string;
   timeSlotId: string;
   day: Day;
+  timeSlot: TimeSlot | null;
 }
 
 export interface SessionSummary {
