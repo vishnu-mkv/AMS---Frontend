@@ -222,7 +222,7 @@ function Navbar() {
             </IfAuthenticated>
           </div>
         </nav>
-        <ScrollArea className="max-w-full m-3 h-body">
+        <ScrollArea className="max-w-full p-3 h-body">
           <Outlet />
           <div className="h-[50px]"></div>
         </ScrollArea>

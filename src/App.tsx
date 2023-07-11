@@ -13,6 +13,7 @@ import TopicList from "./pages/Topics/TopicList";
 import AttendanceTaker from "./pages/Attendance/AttendanceTaker";
 import RecordView from "./pages/Records/RecordView";
 import RecordEntryView from "./pages/Records/RecordEntryView";
+import ScheduleViewer from "./pages/Schedules/ScheduleViewer";
 
 const router = createBrowserRouter([
   {
@@ -48,7 +49,16 @@ const router = createBrowserRouter([
       },
       {
         path: "schedules",
-        element: <ScheduleList />,
+        children: [
+          {
+            index: true,
+            element: <ScheduleList />,
+          },
+          {
+            path: ":id",
+            element: <ScheduleViewer />,
+          },
+        ],
       },
       {
         path: "topics",
