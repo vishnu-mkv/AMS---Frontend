@@ -55,3 +55,28 @@ export interface Schedule extends ScheduleSummary {
   timeSlots: TimeSlot[];
   sessions: Session[];
 }
+
+export interface CreateTimeSlot {
+  startHour: number;
+  startMinute: number;
+  endHour: number;
+  endMinute: number;
+}
+
+export interface ScheduleCreate {
+  name: string;
+  color: string;
+  days: Day[];
+  timeSlots: CreateTimeSlot[];
+}
+
+export interface SessionCreate {
+  scheduleId: string;
+  slots: {
+    timeSlotIds: string[];
+    day: Day;
+  }[];
+  attendanceTakerIds: string[];
+  topicId: string | null;
+  groupIds: string[];
+}

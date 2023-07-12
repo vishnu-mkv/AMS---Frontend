@@ -6,6 +6,7 @@ import Header from "@/components/ui/header";
 import { useGetGroupQuery } from "@/features/api/groupSlice";
 import { Session } from "@/interfaces/schedule";
 import { Group, GroupSummary, UserSummary } from "@/interfaces/user";
+import { cn, toTitleCase } from "@/lib/utils";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { ChevronRight } from "lucide-react";
@@ -205,17 +206,22 @@ function GroupRender({
   );
 }
 
-function GroupItem({
+export function GroupItem({
   group,
   onClick,
+  className,
 }: {
   group: GroupSummary;
-  onClick: (id: string) => void;
+  onClick?: (id: string) => void;
+  className?: string;
 }) {
   return (
     <div
-      className="flex items-center gap-4 bg-slate-100  cursor-pointer p-2 rounded-sm"
-      onClick={() => onClick(group.id)}
+      className={cn(
+        "flex items-center gap-4 bg-slate-100  cursor-pointer p-2 rounded-sm",
+        className
+      )}
+      onClick={() => onClick && onClick(group.id)}
     >
       <div
         className="w-4 h-4 bg-gray-300 rounded-full"
@@ -228,18 +234,28 @@ function GroupItem({
         }
       ></div>
       <div className="text-sm font-medium">{group.name}</div>
-
-      <ChevronRight size="14" className="ml-auto"></ChevronRight>
+      {onClick && <ChevronRight size="14" className="ml-auto"></ChevronRight>}
     </div>
   );
 }
 
-function UserItem({ user }: { user: UserSummary }) {
+export function UserItem({
+  user,
+  className,
+}: {
+  user: UserSummary;
+  className?: string;
+}) {
   return (
-    <div className="flex items-center gap-4 bg-slate-100 p-2 rounded-sm">
+    <div
+      className={cn(
+        "flex items-center gap-4 bg-slate-100 p-2 rounded-sm",
+        className
+      )}
+    >
       <UserAvatar user={user}></UserAvatar>
       <div className="text-sm font-medium">
-        {user.firstName + " " + user.lastName}
+        {toTitleCase(user.firstName + " " + user.lastName)}
       </div>
     </div>
   );

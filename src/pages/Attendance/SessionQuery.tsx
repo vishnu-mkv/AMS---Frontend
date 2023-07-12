@@ -8,7 +8,7 @@ import {
 import { useMemo } from "react";
 import ScheduleList from "../Schedules/ScheduleList";
 import { Label } from "@/components/ui/label";
-import { useGetScheduleQuery } from "@/features/api/scheduleSlics";
+import { useGetScheduleQuery } from "@/features/api/scheduleSlice";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { ErrorMessage, Message } from "@/components/ui/Alert";
 import Loading from "@/components/Loading";

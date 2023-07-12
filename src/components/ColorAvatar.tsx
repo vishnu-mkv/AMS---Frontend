@@ -1,9 +1,16 @@
+import { cn } from "@/lib/utils";
 import React from "react";
 
-function ColorAvatar({ color }: { color?: string | null }) {
+function ColorAvatar({
+  color,
+  className,
+}: {
+  color?: string | null;
+  className?: string;
+}) {
   return (
     <div
-      className="rounded-full w-10 h-10 bg-bgs"
+      className={cn("rounded-full w-10 h-10 bg-bgs", className)}
       style={
         color
           ? {

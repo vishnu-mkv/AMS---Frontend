@@ -8,7 +8,7 @@ import { useState } from "react";
 import { ScheduleSummary } from "@/interfaces/schedule";
 import { ListProps } from "@/interfaces/common";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { useListScheduleQuery } from "@/features/api/scheduleSlics";
+import { useListScheduleQuery } from "@/features/api/scheduleSlice";
 
 function ScheduleList(props: ListProps<ScheduleSummary>) {
   const { allowSelect } = props;
@@ -20,14 +20,17 @@ function ScheduleList(props: ListProps<ScheduleSummary>) {
 
   return (
     <div className="space-y-7 max-w-[600px] mx-auto">
-      <Header
-        title={allowSelect ? "Select Schedules" : "Schedules"}
-        subtitle={
-          allowSelect
-            ? "Choose schedules to for this action"
-            : "All schedules are listed here"
-        }
-      ></Header>
+      <div className="flex items-center justify-between">
+        <Header
+          title={allowSelect ? "Select Schedules" : "Schedules"}
+          subtitle={
+            allowSelect
+              ? "Choose schedules to for this action"
+              : "All schedules are listed here"
+          }
+        ></Header>
+        {!allowSelect && <Button href="create">New</Button>}
+      </div>
       {isLoading && <Loading />}
       {error && <ErrorMessage error={error} title="Couldn't Fetch schedules" />}
       {schedules && (

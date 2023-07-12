@@ -44,11 +44,11 @@ function ScheduleItem({ schedule }: ScheduleItemProps) {
         <DropdownMenuContent>
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <Link to={`/roles/${schedule.id}`}>View</Link>
+          <DropdownMenuItem asChild>
+            <Link to={`/schedules/${schedule.id}`}>View</Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link to={`/roles/${schedule.id}/edit`}>Edit</Link>
+          <DropdownMenuItem asChild>
+            <Link to={`/schedules/create?id=${schedule.id}`}>Edit</Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

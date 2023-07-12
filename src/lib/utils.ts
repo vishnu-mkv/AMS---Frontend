@@ -1,5 +1,6 @@
 import { userPermissionsAtom } from "@/atoms/UserAtom";
 import { PermissionEnum } from "@/interfaces/permission";
+import { TimeSlot } from "@/interfaces/schedule";
 import { ClassValue, clsx } from "clsx";
 import { getDefaultStore } from "jotai";
 import { FormEvent } from "react";
@@ -164,4 +165,23 @@ export function getDayNames(days: number[]): string[] {
     "Saturday",
   ];
   return days.map((day) => dayNames[day]);
+}
+
+export function convertTimeSlot(t: { startTime: string; endTime: string }) {
+  const startTime = t.startTime.split(":").map((x) => parseInt(x));
+  const endTime = t.endTime.split(":").map((x) => parseInt(x));
+  return {
+    endHour: endTime[0],
+    endMinute: endTime[1],
+    startHour: startTime[0],
+    startMinute: startTime[1],
+  };
+}
+
+export function sortTimeSlots(timeSlots: TimeSlot[]) {
+  return timeSlots.slice().sort((a, b) => {
+    const aStart = parseInt(a.startTime.replace(":", ""));
+    const bStart = parseInt(b.startTime.replace(":", ""));
+    return aStart - bStart;
+  });
 }

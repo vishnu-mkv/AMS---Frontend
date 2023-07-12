@@ -14,6 +14,7 @@ import AttendanceTaker from "./pages/Attendance/AttendanceTaker";
 import RecordView from "./pages/Records/RecordView";
 import RecordEntryView from "./pages/Records/RecordEntryView";
 import ScheduleViewer from "./pages/Schedules/ScheduleViewer";
+import ScheduleCreator from "./pages/Schedules/ScheduleCreator";
 
 const router = createBrowserRouter([
   {
@@ -53,6 +54,10 @@ const router = createBrowserRouter([
           {
             index: true,
             element: <ScheduleList />,
+          },
+          {
+            path: "create",
+            element: <ScheduleCreator />,
           },
           {
             path: ":id",

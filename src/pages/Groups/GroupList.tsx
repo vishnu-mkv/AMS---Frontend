@@ -31,7 +31,9 @@ import { ScheduleSummary } from "@/interfaces/schedule";
 import ScheduleList from "../Schedules/ScheduleList";
 import { DialogClose } from "@radix-ui/react-dialog";
 
-type GroupListProps = ListProps<GroupSummary>;
+type GroupListProps = ListProps<GroupSummary> & {
+  schedules?: string[];
+};
 
 function GroupList(props: GroupListProps) {
   const { allowSelect } = props;
@@ -41,7 +43,7 @@ function GroupList(props: GroupListProps) {
     sort: "createdAt",
     order: "desc",
     search: "",
-    scheduleId: [],
+    scheduleId: props.schedules || [],
   });
   const [selectedSchedules, setSelectedSchedules] = useState<ScheduleSummary[]>(
     []
@@ -54,7 +56,8 @@ function GroupList(props: GroupListProps) {
   useEffect(() => {
     setQuery({
       ...query,
-      scheduleId: selectedSchedules.map((schedule) => schedule.id),
+      scheduleId:
+        props.schedules || selectedSchedules.map((schedule) => schedule.id),
     });
   }, [selectedSchedules]);
 
@@ -160,6 +163,7 @@ function GroupList(props: GroupListProps) {
                   selectedItems={selectedSchedules}
                 />
               }
+              selectedShowMode="block"
             ></MultiSelector>
             <DialogFooter>
               <DialogClose>
@@ -195,18 +199,21 @@ function GroupList(props: GroupListProps) {
       }
       {allowSelect && (
         <div className="flex justify-end gap-3">
-          <Button variant={"outline"}>Cancel</Button>
-          <Button
-            onClick={() => {
-              if (allowSelect) {
-                props.onSelect(selectedGroups);
-              }
-            }}
-            disabled={selectedGroups.length === 0}
-            variant={"default"}
-          >
-            Select
-          </Button>
+          <DialogClose asChild>
+            <Button variant={"outline"}>Cancel</Button>
+          </DialogClose>
+          <DialogClose asChild>
+            <Button
+              onClick={() => {
+                if (allowSelect) {
+                  props.onSelect(selectedGroups);
+                }
+              }}
+              variant={"default"}
+            >
+              Select
+            </Button>
+          </DialogClose>
         </div>
       )}
     </div>

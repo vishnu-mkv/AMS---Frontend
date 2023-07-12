@@ -2,7 +2,7 @@ import ColorBanner from "@/components/ColorBanner";
 import Loading from "@/components/Loading";
 import { ErrorMessage } from "@/components/ui/Alert";
 import Header from "@/components/ui/header";
-import { useGetScheduleQuery } from "@/features/api/scheduleSlics";
+import { useGetScheduleQuery } from "@/features/api/scheduleSlice";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { useParams } from "react-router";
 import ScheduleTable from "./scheduleTable";

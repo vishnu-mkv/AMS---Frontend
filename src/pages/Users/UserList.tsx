@@ -27,6 +27,7 @@ import { useEffect, useState } from "react";
 import { ListProps } from "@/interfaces/common";
 import MultiSelector from "@/components/MultiSelector";
 import RoleList from "../Roles/RoleList";
+import { DialogClose } from "@radix-ui/react-dialog";
 
 type UserListProps = ListProps<UserSummary>;
 
@@ -158,18 +159,22 @@ function UserList(props: UserListProps) {
       }
       {allowSelect && (
         <div className="flex justify-end gap-3">
-          <Button variant={"outline"}>Cancel</Button>
-          <Button
-            onClick={() => {
-              if (allowSelect) {
-                props.onSelect(selectedUsers);
-              }
-            }}
-            disabled={selectedUsers.length === 0}
-            variant={"default"}
-          >
-            Select
-          </Button>
+          <DialogClose asChild>
+            <Button variant={"outline"}>Cancel</Button>
+          </DialogClose>
+          <DialogClose asChild>
+            <Button
+              onClick={() => {
+                if (allowSelect) {
+                  props.onSelect(selectedUsers);
+                }
+              }}
+              disabled={selectedUsers.length === 0}
+              variant={"default"}
+            >
+              Select
+            </Button>
+          </DialogClose>
         </div>
       )}
     </div>

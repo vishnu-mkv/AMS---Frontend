@@ -1,10 +1,31 @@
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Schedule, Session, TimeSlot, getTime } from "@/interfaces/schedule";
-import { getDayNames } from "@/lib/utils";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { cn, getDayNames } from "@/lib/utils";
+import { CheckIcon, ChevronLeft, ChevronRight, PencilIcon } from "lucide-react";
 import React, { useEffect, useMemo, useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { GroupItem, UserItem } from "../Attendance/GroupBrowser";
+import { DialogClose } from "@radix-ui/react-dialog";
+import { Button } from "@/components/ui/Button";
+import Header from "@/components/ui/header";
+import { TrashIcon } from "lucide-react";
+import { useDeleteSessionMutation } from "@/features/api/scheduleSlice";
+import { ErrorMessage, Message } from "@/components/ui/Alert";
 
 interface scheduleTableProps {
   schedule: Schedule;
+  onSessionClick?: (session: Session) => void;
+  showOnlySessionId?: string;
+  onSlotClick?: (slot: TimeSlot, day: number) => void;
+  onEditSession?: (session: Session) => void;
+  allowDelete?: boolean;
 }
 
 interface SlotData {
@@ -15,8 +36,38 @@ interface SlotData {
 
 type TableData = SlotData[][];
 
-function ScheduleTable({ schedule }: scheduleTableProps) {
+function ScheduleTable({
+  schedule,
+  onSessionClick,
+  showOnlySessionId,
+  onSlotClick,
+  onEditSession,
+  allowDelete,
+}: scheduleTableProps) {
   // day index - hash map of day to index
+
+  const [viewSession, setViewSession] = useState<Session | undefined>(
+    undefined
+  );
+
+  const [
+    deleteSession,
+    { isLoading: isDeleting, isSuccess: deleteSuccess, isError: deleteError },
+  ] = useDeleteSessionMutation();
+
+  function handleDeleteSession() {
+    if (!viewSession || !allowDelete) return;
+    deleteSession({
+      id: viewSession.id,
+      scheduleId: schedule.id,
+    });
+  }
+
+  useEffect(() => {
+    if (deleteSuccess) {
+      setViewSession(undefined);
+    }
+  }, [deleteSuccess]);
 
   const DayIndex = useMemo(() => {
     const dayIndex: Map<number, number> = new Map();
@@ -79,56 +130,216 @@ function ScheduleTable({ schedule }: scheduleTableProps) {
 
   if (tableData.length === 0) return <div></div>;
 
+  function slotClick(slot: TimeSlot, day: number) {
+    if (onSlotClick) onSlotClick(slot, day);
+  }
+
   return (
-    <div>
-      <table className="border-collapse border border-slate-500 table table-fixed w-full">
-        <thead>
-          <tr>
-            <TableHeader>Days / Time Slot</TableHeader>
-            {schedule.timeSlots.map((slot) => (
-              <TableHeader>{getTime(slot)}</TableHeader>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {schedule.days.map((day) => (
+    <div className="grid">
+      <ScrollArea orientation="horizontal" className="max-w-full">
+        <table className="border-collapse border border-slate-500 table table-fixed min-w-full">
+          <thead>
             <tr>
-              <TableHeader>{getDayNames([day])[0]}</TableHeader>
-              {tableData[DayIndex.get(day)!].map((slotData) => {
-                if (slotData.sessions.length === 0)
-                  return <TableCell></TableCell>;
-                const activeSession = slotData.sessions[slotData.activeIndex];
-                return (
-                  <SessionCell
-                    session={activeSession}
-                    index={slotData.activeIndex}
-                    setIndex={(index) => {
-                      slotData.activeIndex = index;
-                      setTableData([...tableData]);
-                    }}
-                    totalSessions={slotData.sessions.length}
-                  />
-                );
-              })}
+              <TableHeader>Days / Time Slot</TableHeader>
+              {schedule.timeSlots.map((slot) => (
+                <TableHeader>{getTime(slot)}</TableHeader>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {schedule.days.map((day) => (
+              <tr>
+                <TableHeader>{getDayNames([day])[0]}</TableHeader>
+                {tableData[DayIndex.get(day)!].map((slotData) => {
+                  if (slotData.sessions.length === 0)
+                    return (
+                      <TableCell
+                        onClick={() => slotClick(slotData.timeSlot, day)}
+                      ></TableCell>
+                    );
+
+                  if (showOnlySessionId) {
+                    // if the session id is not in the slot, return empty cell
+                    if (
+                      slotData.sessions.findIndex(
+                        (session) => session.id === showOnlySessionId
+                      ) === -1
+                    ) {
+                      return (
+                        <TableCell
+                          onClick={() => slotClick(slotData.timeSlot, day)}
+                        ></TableCell>
+                      );
+                    }
+
+                    return (
+                      <TableCell
+                        onClick={() => slotClick(slotData.timeSlot, day)}
+                      >
+                        <CheckIcon className="text-primary mx-auto"></CheckIcon>
+                      </TableCell>
+                    );
+                  }
+
+                  const activeSession = slotData.sessions[slotData.activeIndex];
+                  return (
+                    <SessionCell
+                      session={activeSession}
+                      index={slotData.activeIndex}
+                      setIndex={(index) => {
+                        slotData.activeIndex = index;
+                        setTableData([...tableData]);
+                      }}
+                      totalSessions={slotData.sessions.length}
+                      onClick={() => {
+                        if (onSessionClick) onSessionClick(activeSession);
+                        else setViewSession(activeSession);
+                        slotClick(slotData.timeSlot, day);
+                      }}
+                    />
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <Dialog
+          open={!!viewSession}
+          onOpenChange={(open) => {
+            if (!open) {
+              setViewSession(undefined);
+            }
+          }}
+        >
+          <DialogContent className="!max-w-[800px]">
+            <DialogTitle asChild>
+              <div className="flex gap-5 items-center justify-between">
+                <Header title={viewSession?.topic?.name || "No topic"}></Header>
+
+                <div className="">
+                  {onEditSession && (
+                    <Button
+                      variant={"ghost"}
+                      onClick={() => {
+                        if (viewSession && onEditSession) {
+                          onEditSession(viewSession);
+                        }
+                      }}
+                    >
+                      <PencilIcon
+                        size="15"
+                        className="text-primary"
+                      ></PencilIcon>
+                    </Button>
+                  )}
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      {allowDelete && (
+                        <Button variant={"ghost"}>
+                          <TrashIcon
+                            size="15"
+                            className="text-red-400"
+                          ></TrashIcon>
+                        </Button>
+                      )}
+                    </DialogTrigger>
+                    <DialogContent className="!max-w-[500px]">
+                      <DialogTitle>Delete Session</DialogTitle>
+                      <DialogDescription className="mt-5 my-8">
+                        Are you sure you want to delete this session? This
+                        action cannot be undone.
+                      </DialogDescription>
+                      <div className="space-y-5">
+                        {deleteSuccess && (
+                          <Message
+                            title="Success"
+                            message="Session deleted successfully"
+                          />
+                        )}
+                        {deleteError && (
+                          <ErrorMessage error={deleteError}></ErrorMessage>
+                        )}
+                      </div>
+                      <DialogFooter>
+                        <DialogClose asChild>
+                          <Button variant="outline">Cancel</Button>
+                        </DialogClose>
+                        {!deleteSuccess && (
+                          <Button
+                            variant="destructive"
+                            onClick={handleDeleteSession}
+                            loader={{
+                              loading: isDeleting,
+                              text: "Deleting...",
+                            }}
+                          >
+                            Delete
+                          </Button>
+                        )}
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              </div>
+            </DialogTitle>
+            <div className="space-y-7 mt-7">
+              <div className="space-y-3">
+                <h2 className="text-medium">Groups</h2>
+                {viewSession?.groups.map((g) => (
+                  <GroupItem group={g} />
+                ))}
+              </div>
+              <div className="space-y-3">
+                <h2 className="text-medium">Attendance Takers</h2>
+                {viewSession?.attendanceTakers.map((f) => (
+                  <UserItem user={f} />
+                ))}
+              </div>
+              <div className="space-y-3">
+                <h2 className="text-medium">Slots</h2>
+                <ScheduleTable
+                  schedule={schedule}
+                  showOnlySessionId={viewSession?.id}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <DialogClose className="mt-5 flex justify-end">
+                <Button variant="outline">Close</Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </ScrollArea>
     </div>
   );
 }
 
 function TableHeader({ children }: { children: React.ReactNode }) {
   return (
-    <th className="border border-slate-500 p-5 px-3 font-medium bg-secondary/80">
+    <th className="border border-slate-500 p-5 px-3 font-medium bg-secondary/80 min-w-[8em]">
       {children}
     </th>
   );
 }
 
-function TableCell({ children }: { children?: React.ReactNode }) {
+function TableCell({
+  children,
+  onClick,
+}: {
+  children?: React.ReactNode;
+  onClick?: () => void;
+}) {
   return (
-    <td className="border border-slate-500 p-2 px-3 font-normal bg-secondary/40">
+    <td
+      className={cn(
+        "border border-slate-500 p-2 px-3 font-normal bg-secondary/40",
+        {
+          "cursor-pointer hover:bg-secondary/60": onClick !== undefined,
+        }
+      )}
+      onClick={onClick}
+    >
       {children}
     </td>
   );
@@ -139,11 +350,13 @@ function SessionCell({
   index,
   setIndex,
   totalSessions,
+  onClick,
 }: {
   session: Session;
   index: number;
   setIndex: (index: number) => void;
   totalSessions: number;
+  onClick: () => void;
 }) {
   // group names separated by commas
   const groupNames = session.groups.map((group) => group.name).join(", ");
@@ -156,7 +369,7 @@ function SessionCell({
   return (
     <TableCell>
       <div className="space-y-3 relative px-4">
-        <div className="text-lg font-medium">
+        <div className="text-lg font-medium  cursor-pointer" onClick={onClick}>
           {session.topic?.name || "No Topic"}
         </div>
         <p className="text-sm text-gray-500 ">{groupString}</p>
