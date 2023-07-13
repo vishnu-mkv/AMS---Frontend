@@ -46,11 +46,11 @@ function UserItem({ user }: UserItemProps) {
         <DropdownMenuContent>
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
+          <DropdownMenuItem asChild>
             <Link to={`/users/${user.id}`}>View</Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link to={`/users/${user.id}/edit`}>Edit</Link>
+          <DropdownMenuItem asChild>
+            <Link to={`/users/create?id=${user.id}`}>Edit</Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

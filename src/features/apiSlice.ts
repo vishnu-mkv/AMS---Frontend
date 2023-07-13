@@ -48,6 +48,7 @@ export const apiSlice = createApi({
     "Attendance",
     "Attendance-status",
     "Records",
+    "Permissions",
   ],
   endpoints: (builder) => ({}),
 });

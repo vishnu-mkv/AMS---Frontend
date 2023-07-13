@@ -16,6 +16,8 @@ export interface TopicSummary {
   color: string | null;
 }
 
+export type CreateTopic = Omit<TopicSummary, "id">;
+
 export interface TimeSlot {
   id: string;
   startTime: string;

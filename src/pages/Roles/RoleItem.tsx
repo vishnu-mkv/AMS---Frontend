@@ -40,11 +40,11 @@ function RoleItem({ role }: RoleItemProps) {
         <DropdownMenuContent>
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
+          <DropdownMenuItem asChild>
             <Link to={`/roles/${role.id}`}>View</Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link to={`/roles/${role.id}/edit`}>Edit</Link>
+          <DropdownMenuItem asChild>
+            <Link to={`/roles/create?id=${role.id}`}>Edit</Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

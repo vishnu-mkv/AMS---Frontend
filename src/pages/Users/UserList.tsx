@@ -56,14 +56,17 @@ function UserList(props: UserListProps) {
 
   return (
     <div className="space-y-7 max-w-[600px] mx-auto">
-      <Header
-        title={allowSelect ? "Select Users" : "Users"}
-        subtitle={
-          allowSelect
-            ? "Choose users to for this action"
-            : "All users are listed here"
-        }
-      ></Header>
+      <div className="flex items-center justify-between">
+        <Header
+          title={allowSelect ? "Select Users" : "Users"}
+          subtitle={
+            allowSelect
+              ? "Choose users to for this action"
+              : "All users are listed here"
+          }
+        ></Header>
+        {!allowSelect && <Button href="create">New</Button>}
+      </div>
 
       <div className="flex justify-between gap-4">
         <DebouncedInput

@@ -15,6 +15,11 @@ import RecordView from "./pages/Records/RecordView";
 import RecordEntryView from "./pages/Records/RecordEntryView";
 import ScheduleViewer from "./pages/Schedules/ScheduleViewer";
 import ScheduleCreator from "./pages/Schedules/ScheduleCreator";
+import TopicCreator from "./pages/Topics/TopicCreator";
+import TopicView from "./pages/Topics/TopicView";
+import RoleView from "./pages/Roles/RoleView";
+import RoleCreator from "./pages/Roles/RoleCreator";
+import UserCreator from "./pages/Users/UserCreator";
 
 const router = createBrowserRouter([
   {
@@ -38,11 +43,33 @@ const router = createBrowserRouter([
       },
       {
         path: "users",
-        element: <UserList />,
+        children: [
+          {
+            index: true,
+            element: <UserList />,
+          },
+          {
+            path: "create",
+            element: <UserCreator />,
+          },
+        ],
       },
       {
         path: "roles",
-        element: <RoleList />,
+        children: [
+          {
+            index: true,
+            element: <RoleList />,
+          },
+          {
+            path: ":id",
+            element: <RoleView />,
+          },
+          {
+            path: "create",
+            element: <RoleCreator />,
+          },
+        ],
       },
       {
         path: "groups",
@@ -67,7 +94,20 @@ const router = createBrowserRouter([
       },
       {
         path: "topics",
-        element: <TopicList />,
+        children: [
+          {
+            index: true,
+            element: <TopicList />,
+          },
+          {
+            path: ":id",
+            element: <TopicView />,
+          },
+          {
+            path: "create",
+            element: <TopicCreator />,
+          },
+        ],
       },
       {
         path: "attendance",

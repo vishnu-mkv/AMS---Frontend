@@ -1,5 +1,5 @@
 import { apiSlice } from "../apiSlice";
-import { TopicSummary } from "@/interfaces/schedule";
+import { CreateTopic, TopicSummary } from "@/interfaces/schedule";
 
 export const topicsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -19,8 +19,40 @@ export const topicsApiSlice = apiSlice.injectEndpoints({
             ]
           : [{ type: "Topics", id: "LIST" }],
     }),
+    getTopic: builder.query<TopicSummary, string>({
+      query: (id) => ({
+        url: `/topics/${id}`,
+        method: "GET",
+      }),
+      providesTags: (result, error, id) => [{ type: "Topics", id }],
+    }),
+    createTopic: builder.mutation<TopicSummary, CreateTopic>({
+      query: (body) => ({
+        url: "/topics",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: [{ type: "Topics", id: "LIST" }],
+    }),
+    updateTopic: builder.mutation<
+      TopicSummary,
+      Partial<CreateTopic> & { id: string }
+    >({
+      query: ({ id, ...body }) => ({
+        url: `/topics/${id}`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: (result, error, { id }) =>
+        result ? [{ type: "Topics", id }] : [],
+    }),
   }),
   overrideExisting: false,
 });
 
-export const { useListTopicsQuery } = topicsApiSlice;
+export const {
+  useListTopicsQuery,
+  useGetTopicQuery,
+  useCreateTopicMutation,
+  useUpdateTopicMutation,
+} = topicsApiSlice;

@@ -20,14 +20,17 @@ function RoleList(props: ListProps<roleSummary>) {
 
   return (
     <div className="space-y-7 max-w-[600px] mx-auto">
-      <Header
-        title={allowSelect ? "Select Roles" : "Roles"}
-        subtitle={
-          allowSelect
-            ? "Choose roles to for this action"
-            : "All roles are listed here"
-        }
-      ></Header>
+      <div className="flex items-center justify-between">
+        <Header
+          title={allowSelect ? "Select Roles" : "Roles"}
+          subtitle={
+            allowSelect
+              ? "Choose roles to for this action"
+              : "All roles are listed here"
+          }
+        ></Header>
+        {!allowSelect && <Button href="create">New</Button>}
+      </div>
       {isLoading && <Loading />}
       {error && <ErrorMessage error={error} title="Couldn't Fetch roles" />}
       {roles && (

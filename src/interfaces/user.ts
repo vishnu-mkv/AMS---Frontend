@@ -1,11 +1,11 @@
 import { PaginatedQuery } from "./common";
 
-enum Gender {
+export enum Gender {
   "MALE" = 0,
   "FEMALE" = 1,
 }
 
-enum GroupType {
+export enum GroupType {
   "GroupOfUsers" = 0,
   "GroupOfGroups" = 1,
 }
@@ -19,7 +19,6 @@ export interface Permission {
   id: string;
   name: string;
   description: string;
-  color: string | null;
 }
 
 export interface Role {
@@ -39,16 +38,27 @@ export interface GroupSummary {
   scheduleId: string;
 }
 
+export interface RoleDetail extends Role {
+  users: UserSummary[];
+}
+
+export interface RoleCreate extends Omit<Role, "id" | "permissions"> {
+  users?: string[];
+  permissions?: string[];
+}
+
 export interface Group extends GroupSummary {
   groups: GroupSummary[];
   users: UserSummary[];
 }
 
+export type GroupCreate = Omit<GroupSummary, "id" | "disabled">;
+
 export interface User {
   id: string;
   firstName: string;
   lastName: string;
-  dob: Date;
+  dob: string;
   gender: Gender;
   signInAllowed: boolean;
   picture: string | null;
@@ -56,8 +66,19 @@ export interface User {
   organization: Organization;
   roles: Role[];
   groups: GroupSummary[];
-  scheduleId: string | null;
+  scheduleId: string | null | undefined;
+  userName?: string | null;
 }
+
+export type UserCreate = Omit<
+  User,
+  "id" | "disabled" | "picture" | "roles" | "groups" | "organization"
+> & {
+  roleIds?: string[];
+  pictureFile?: File;
+  password?: string;
+  groupIds?: string[];
+};
 
 export type roleSummary = Pick<Role, "id" | "name" | "description" | "color">;
 

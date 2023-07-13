@@ -8,6 +8,7 @@ type MultiSelectorProps<T> = {
   renderItem?: (item: T) => React.ReactNode;
   dialogContent: React.ReactNode;
   label: string;
+  disabled?: boolean;
 } & (
   | {
       selectedItems: T[];
@@ -22,7 +23,7 @@ type MultiSelectorProps<T> = {
 );
 
 function MultiSelector<T>(props: MultiSelectorProps<T>) {
-  const { label, dialogContent, renderItem, mode } = props;
+  const { label, dialogContent, renderItem, mode, disabled } = props;
 
   return (
     <div className="space-y-5">
@@ -30,7 +31,10 @@ function MultiSelector<T>(props: MultiSelectorProps<T>) {
       <div className="flex gap-5 justify-between items-strech">
         <Dialog>
           <DialogTrigger asChild>
-            <div className="max-w-[calc(100%-70px)] flex flex-wrap gap-3 items-center grow  border border-input bg-slate-100 rounded-md p-2 cursor-pointer">
+            <button
+              className="max-w-[calc(100%-70px)] flex flex-wrap gap-3 items-center grow  border border-input bg-slate-100 rounded-md p-2 cursor-pointer disabled:cursor-not-allowed"
+              disabled={disabled}
+            >
               {mode === "single" &&
                 renderItem &&
                 props.selectedItem &&
@@ -64,10 +68,10 @@ function MultiSelector<T>(props: MultiSelectorProps<T>) {
                     )}
                   </div>
                 ))}
-            </div>
+            </button>
           </DialogTrigger>
           <DialogTrigger asChild>
-            <Button variant={"outline"}>
+            <Button variant={"outline"} disabled={disabled}>
               <SearchIcon className="w-4 h-4"></SearchIcon>
             </Button>
           </DialogTrigger>
@@ -87,6 +91,7 @@ function MultiSelector<T>(props: MultiSelectorProps<T>) {
                 {renderItem(item)}
                 {props.setSelectedItems && (
                   <Button
+                    type="button"
                     variant="ghost"
                     onClick={(e) => {
                       e.stopPropagation();

@@ -1,53 +1,57 @@
 import ListSelector from "@/components/ListSelector";
 import Loading from "@/components/Loading";
-import TopicItem from "@/pages/Topics/TopicItem";
 import { ErrorMessage } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import Header from "@/components/ui/header";
 import { useState } from "react";
-import { TopicSummary } from "@/interfaces/schedule";
 import { ListProps } from "@/interfaces/common";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { useListTopicsQuery } from "@/features/api/TopicSlice";
+import { Permission } from "@/interfaces/user";
+import { useGetPermissionsQuery } from "@/features/api/authSlice";
+import PermissionItem from "./PermissionItem";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 
-type TopicListProps = ListProps<TopicSummary> & {
-  items?: TopicSummary[];
-};
-
-function TopicList(props: TopicListProps) {
+function PermissionList(
+  props: ListProps<Permission> & {
+    items?: Permission[];
+    hideHeader?: boolean;
+  }
+) {
   const { allowSelect } = props;
 
-  const [selectedItems, setSelectedItems] = useState<TopicSummary[]>(
-    allowSelect ? props.selectedItems : ([] as TopicSummary[])
+  const [selectedItems, setSelectedItems] = useState<Permission[]>(
+    allowSelect ? props.selectedItems : ([] as Permission[])
   );
   const {
-    data: topics,
+    data: permissionsData,
     isLoading,
     error,
-  } = useListTopicsQuery(props.items ? skipToken : undefined);
+  } = useGetPermissionsQuery(props.items ? skipToken : undefined);
+
+  let permissions = props.items ?? permissionsData ?? [];
 
   return (
     <div className="space-y-7 max-w-[600px] mx-auto">
-      <div className="flex items-center justify-between">
+      {!props.hideHeader && (
         <Header
-          title={allowSelect ? "Select Topics" : "Topics"}
+          title={allowSelect ? "Select Permissions" : "Permissions"}
           subtitle={
             allowSelect
-              ? "Choose topics to for this action"
-              : "All topics are listed here"
+              ? "Choose permissions to for this action"
+              : "All permissions are listed here"
           }
         ></Header>
-        {!allowSelect && <Button href="create">New</Button>}
-      </div>
+      )}
       {isLoading && <Loading />}
-      {error && <ErrorMessage error={error} title="Couldn't Fetch topics" />}
-      {(props.items || topics) && (
-        <ListSelector<TopicSummary>
+      {error && (
+        <ErrorMessage error={error} title="Couldn't Fetch permissions" />
+      )}
+      {permissions && (
+        <ListSelector<Permission>
           allowSelect={allowSelect || false}
           onSelect={setSelectedItems}
-          items={props.items ?? topics ?? []}
-          renderItem={(topic) => <TopicItem topic={topic} />}
+          items={permissions}
+          renderItem={(p) => <PermissionItem permission={p} />}
           selectedItems={selectedItems}
           isEqual={(x, y) => x.id === y.id}
           mode={props.allowSelect ? props.mode : "multiple"}
@@ -76,4 +80,4 @@ function TopicList(props: TopicListProps) {
   );
 }
 
-export default TopicList;
+export default PermissionList;

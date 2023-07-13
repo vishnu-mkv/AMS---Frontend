@@ -56,7 +56,6 @@ function ScheduleList(props: ListProps<ScheduleSummary>) {
                   props.onSelect(selectedItems);
                 }
               }}
-              disabled={selectedItems.length === 0}
               variant={"default"}
             >
               Select

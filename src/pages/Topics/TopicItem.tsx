@@ -29,7 +29,7 @@ function TopicItem({ topic }: TopicItemProps) {
         }
       ></div>
       <div className="space-y-3 my-1">
-        <Link to={`/roles/${topic.id}`}>
+        <Link to={`/topics/${topic.id}`}>
           <span className="text-gray-700">{toTitleCase(topic.name)}</span>
         </Link>
       </div>
@@ -40,11 +40,11 @@ function TopicItem({ topic }: TopicItemProps) {
         <DropdownMenuContent>
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <Link to={`/roles/${topic.id}`}>View</Link>
+          <DropdownMenuItem asChild>
+            <Link to={`/topics/${topic.id}`}>View</Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link to={`/roles/${topic.id}/edit`}>Edit</Link>
+          <DropdownMenuItem asChild>
+            <Link to={`/topics/create?id=${topic.id}`}>Edit</Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

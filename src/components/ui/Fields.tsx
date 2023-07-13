@@ -57,6 +57,7 @@ interface BaseSelectProps<T> extends SelectRootProps {
   getText: (item: T) => string;
   getExtras?: (item: T) => string;
   placeholder?: string;
+  className?: string;
 }
 
 interface SelectProps<T = {}> {
@@ -79,7 +80,6 @@ export interface InputElementProps<T = {}> {
 }
 
 export const ErrorMessage = ({
-  children,
   match,
 }: {
   children: ReactNode;
@@ -144,9 +144,6 @@ export function Input<T = {}>({
   label,
   className,
 }: InputElementProps<T>) {
-  const [number, setNumber] = useState("");
-  const [code, setCode] = useState("");
-
   let labelComp = label ? (
     <Form.Label className="" asChild>
       <Label {...label} className={field.type === "checkbox" ? "mb-0" : ""} />
@@ -170,7 +167,7 @@ export function Input<T = {}>({
     case "select":
       inputBase = (
         <Select className="w-full" {...props}>
-          <SelectTrigger className="w-full">
+          <SelectTrigger className={cn("w-full", props.className)}>
             <SelectValue placeholder={props.placeholder} />
           </SelectTrigger>
           <SelectContent>

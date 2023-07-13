@@ -7,7 +7,7 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import { Button } from "./ui/Button";
 
 interface ColorPickerProps {
-  color?: string;
+  color?: string | null;
   setColor?: (color: string) => void;
   className?: string;
 }

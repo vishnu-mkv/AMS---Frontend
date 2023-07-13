@@ -1,4 +1,9 @@
-import { Group, GroupSummary, GroupsQuery } from "@/interfaces/user";
+import {
+  Group,
+  GroupCreate,
+  GroupSummary,
+  GroupsQuery,
+} from "@/interfaces/user";
 import { apiSlice } from "../apiSlice";
 import { buildQuery } from "@/lib/utils";
 import { PaginatedResponse } from "@/interfaces/common";
@@ -31,8 +36,32 @@ export const groupApiSlice = apiSlice.injectEndpoints({
       }),
       providesTags: (result, error, id) => [{ type: "Groups", id }],
     }),
+    createGroup: builder.mutation<Group, GroupCreate>({
+      query: (body) => ({
+        url: "/groups",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: [{ type: "Groups", id: "LIST" }],
+    }),
+    updateGroup: builder.mutation<Group, Partial<GroupCreate> & { id: string }>(
+      {
+        query: ({ id, ...body }) => ({
+          url: `/groups/${id}`,
+          method: "PUT",
+          body,
+        }),
+        invalidatesTags: (result, error, { id }) =>
+          result ? [{ type: "Groups", id }] : [],
+      }
+    ),
   }),
   overrideExisting: false,
 });
 
-export const { useListGroupsQuery, useGetGroupQuery } = groupApiSlice;
+export const {
+  useListGroupsQuery,
+  useGetGroupQuery,
+  useCreateGroupMutation,
+  useUpdateGroupMutation,
+} = groupApiSlice;

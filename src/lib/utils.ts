@@ -185,3 +185,13 @@ export function sortTimeSlots(timeSlots: TimeSlot[]) {
     return aStart - bStart;
   });
 }
+
+export function addArrayToForm(
+  formData: FormData,
+  array: string[],
+  paramName: string
+) {
+  array.forEach((item, index) => {
+    formData.append(`${paramName}[${index}]`, item);
+  });
+}
