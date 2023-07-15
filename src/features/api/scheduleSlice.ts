@@ -33,7 +33,32 @@ export const scheduleApiSlice = apiSlice.injectEndpoints({
         url: `/schedules/${id}`,
         method: "GET",
       }),
-      providesTags: (result, error, id) => [{ type: "Schedules", id }],
+      providesTags: (result, error, id) =>
+        result
+          ? [
+              { type: "Schedules", id },
+              ...result.sessions.map(({ id }) => ({
+                type: "Sessions" as const,
+                id,
+              })),
+              ...result.sessions
+                .map((session) => {
+                  return session.groups.map(({ id }) => ({
+                    type: "Groups" as const,
+                    id,
+                  }));
+                })
+                .flat(),
+            ]
+          : [],
+    }),
+    getMySchedule: builder.query<Schedule, void>({
+      query: () => ({
+        url: `schedules/myschedule/`,
+        method: "GET",
+      }),
+      providesTags: (result, error) =>
+        result ? [{ type: "Schedules", id: result.id }] : [],
     }),
     getSession: builder.query<Session, string>({
       query: (id) => ({
@@ -154,4 +179,5 @@ export const {
   useAddTimeSlotMutation,
   useDeleteTimeSlotMutation,
   useUpdateTimeSlotMutation,
+  useGetMyScheduleQuery,
 } = scheduleApiSlice;

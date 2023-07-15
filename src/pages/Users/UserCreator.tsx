@@ -1,4 +1,3 @@
-import ColorPicker from "@/components/ColorPicker";
 import Container from "@/components/Container";
 import { DatePicker } from "@/components/DatePicker";
 import Loading from "@/components/Loading";
@@ -17,6 +16,7 @@ import { ScheduleSummary } from "@/interfaces/schedule";
 import {
   Gender,
   GroupSummary,
+  GroupType,
   UserCreate,
   roleSummary,
 } from "@/interfaces/user";
@@ -96,9 +96,12 @@ function UserCreator() {
     if (user) {
       setNewUser({
         ...user,
-        dob: moment(user.dob).toDate(),
+        dob: user.dob ? moment(user.dob).toDate() : undefined,
         picture: {},
         gender: (user.gender === Gender.MALE ? "0" : "1") as any,
+        groups: user.groups.filter(
+          (g) => g.groupType === GroupType.GroupOfUsers
+        ),
       });
     }
   }, [user]);
@@ -120,18 +123,21 @@ function UserCreator() {
       userName,
     } = newUser;
 
-    if (!firstName || !lastName || !gender || !dob || !groups || !roles) return;
+    if (!firstName || !lastName || !gender || !groups || !roles) return;
 
     const user: UserCreate = {
       firstName,
       gender,
       lastName,
       signInAllowed,
-      dob: moment(dob).format("YYYY-MM-DD"),
       scheduleId: schedule?.id,
       password,
       userName,
     } as UserCreate;
+
+    if (dob) {
+      user.dob = moment(dob).format("YYYY-MM-DD");
+    }
 
     let formData = new FormData();
 
@@ -300,7 +306,7 @@ function UserCreator() {
           )}
           selectedItem={newUser.schedule}
           mode={"single"}
-          disabled={mode === "edit" && !!newUser.schedule}
+          disabled={mode === "edit" && !!user?.schedule}
         ></MultiSelector>
         <MultiSelector<GroupSummary>
           dialogContent={
@@ -308,7 +314,8 @@ function UserCreator() {
               onSelect={(groups) => onChange("groups", groups)}
               selectedItems={newUser.groups ?? []}
               allowSelect={true}
-              schedules={newUser.schedule ? [newUser.schedule.id] : []}
+              schedules={newUser.schedule ? [newUser.schedule.id] : ["null"]}
+              groupType={GroupType.GroupOfUsers}
             />
           }
           label="Groups"

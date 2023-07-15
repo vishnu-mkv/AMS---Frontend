@@ -7,6 +7,11 @@ import Header from "@/components/ui/header";
 import { ErrorMessage } from "@/components/ui/Alert";
 import { useParams } from "react-router";
 import Container from "@/components/Container";
+import { Badge } from "@/components/ui/Badge";
+import { CalendarIcon, TimerIcon } from "lucide-react";
+import moment from "moment";
+import { getTime } from "@/interfaces/schedule";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 function RecordEntryView() {
   const params = useParams();
@@ -33,6 +38,29 @@ function RecordEntryView() {
           title="Something went wrong"
           error={attendanceError || groupError}
         />
+      )}
+      {attendanceData && (
+        <div className="flex gap-5">
+          <Badge variant={"secondary"} className="text-sm">
+            <CalendarIcon size="16" className="mr-2"></CalendarIcon>
+            {moment(attendanceData.recordedFor).format("DD MMM YYYY")}
+          </Badge>
+          {attendanceData.slot.timeSlot && (
+            <Badge variant={"secondary"} className="text-sm">
+              <TimerIcon size="16" className="mr-2"></TimerIcon>
+              {getTime(attendanceData.slot.timeSlot)}
+            </Badge>
+          )}
+          {attendanceData.session.topic && (
+            <Badge variant={"secondary"} className="text-sm">
+              <Icon
+                icon="icon-park-solid:topic-discussion"
+                className="mr-2"
+              ></Icon>
+              {attendanceData.session.topic?.name}
+            </Badge>
+          )}
+        </div>
       )}
       {group && (
         <AttendanceViewer

@@ -22,8 +22,10 @@ function GroupItem({ group }: GroupItemProps) {
     <div className="bg-terinary rounded-sm flex p-3 px-5 gap-10 w-full items-center min-w-[400px]">
       <ColorAvatar color={group.color}></ColorAvatar>
       <div className="space-y-2 my-1">
-        <Link to={`/roles/${group.id}`}>
-          <span className="text-gray-700">{toTitleCase(group.name)}</span>
+        <Link to={`/groups/${group.id}`}>
+          <span className="text-gray-800 font-medium text-[15px]">
+            {toTitleCase(group.name)}
+          </span>
         </Link>
         <div>
           <Badge variant={"secondary"}>
@@ -38,11 +40,11 @@ function GroupItem({ group }: GroupItemProps) {
         <DropdownMenuContent>
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <Link to={`/roles/${group.id}`}>View</Link>
+          <DropdownMenuItem asChild>
+            <Link to={`/groups/${group.id}`}>View</Link>
           </DropdownMenuItem>
-          <DropdownMenuItem>
-            <Link to={`/roles/${group.id}/edit`}>Edit</Link>
+          <DropdownMenuItem asChild>
+            <Link to={`/groups/create?id=${group.id}`}>Edit</Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

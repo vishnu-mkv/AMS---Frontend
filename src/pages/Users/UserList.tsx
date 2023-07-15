@@ -29,7 +29,9 @@ import MultiSelector from "@/components/MultiSelector";
 import RoleList from "../Roles/RoleList";
 import { DialogClose } from "@radix-ui/react-dialog";
 
-type UserListProps = ListProps<UserSummary>;
+type UserListProps = ListProps<UserSummary> & {
+  scheduleId?: string[];
+};
 
 function UserList(props: UserListProps) {
   const { allowSelect } = props;
@@ -40,6 +42,7 @@ function UserList(props: UserListProps) {
     order: "desc",
     search: "",
     roles: [],
+    scheduleId: props.scheduleId,
   });
   const [selectedRoles, setSelectedRoles] = useState<roleSummary[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<UserSummary[]>(

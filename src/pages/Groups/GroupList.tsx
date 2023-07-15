@@ -21,7 +21,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { GroupSummary, GroupsQuery } from "@/interfaces/user";
+import { Group, GroupSummary, GroupsQuery } from "@/interfaces/user";
 import { Filter } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ListProps } from "@/interfaces/common";
@@ -33,6 +33,7 @@ import { DialogClose } from "@radix-ui/react-dialog";
 
 type GroupListProps = ListProps<GroupSummary> & {
   schedules?: string[];
+  groupType?: Group["groupType"];
 };
 
 function GroupList(props: GroupListProps) {
@@ -44,6 +45,7 @@ function GroupList(props: GroupListProps) {
     order: "desc",
     search: "",
     scheduleId: props.schedules || [],
+    groupType: props.groupType,
   });
   const [selectedSchedules, setSelectedSchedules] = useState<ScheduleSummary[]>(
     []
@@ -63,14 +65,17 @@ function GroupList(props: GroupListProps) {
 
   return (
     <div className="space-y-7 max-w-[600px] mx-auto">
-      <Header
-        title={allowSelect ? "Select Groups" : "Groups"}
-        subtitle={
-          allowSelect
-            ? "Choose groups to for this action"
-            : "All groups are listed here"
-        }
-      ></Header>
+      <div className="flex items-center justify-between">
+        <Header
+          title={allowSelect ? "Select Groups" : "Groups"}
+          subtitle={
+            allowSelect
+              ? "Choose groups to for this action"
+              : "All groups are listed here"
+          }
+        ></Header>
+        {!allowSelect && <Button href="create">New</Button>}
+      </div>
 
       <div className="flex justify-between gap-4">
         <DebouncedInput

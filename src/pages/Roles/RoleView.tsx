@@ -31,6 +31,7 @@ function RoleView() {
               subtitle={role.description}
               className="text-white"
               subtitleClassName="text-gray-200"
+              editUrl={`/roles/create?id=${role.id}`}
             ></Header>
           </ColorBanner>
         )}

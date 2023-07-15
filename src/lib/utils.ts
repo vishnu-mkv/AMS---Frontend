@@ -191,6 +191,10 @@ export function addArrayToForm(
   array: string[],
   paramName: string
 ) {
+  if (array.length === 0) {
+    formData.append(paramName, "");
+    return;
+  }
   array.forEach((item, index) => {
     formData.append(`${paramName}[${index}]`, item);
   });

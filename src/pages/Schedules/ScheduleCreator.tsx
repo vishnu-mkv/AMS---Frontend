@@ -234,7 +234,7 @@ function ScheduleCreator1() {
 
 function ScheduleCreator2() {
   const { state, changePage } = useScheduleCreateor();
-  const { schedule } = state;
+  const { schedule, mode: _mode } = state;
 
   const [newSession, setNewSession] = useState<Session>(defaultSession);
   const [open, setOpen] = useState(false);
@@ -258,9 +258,11 @@ function ScheduleCreator2() {
       <div className="flex items-center justify-between flex-wrap gap-5">
         <Header
           title={
-            mode === "edit" ? toTitleCase(schedule.name) : "Create New Schedule"
+            _mode === "edit"
+              ? toTitleCase(schedule.name)
+              : "Create New Schedule"
           }
-          subtitle={mode === "create" ? "" : "You are currently editing."}
+          subtitle={_mode === "create" ? "" : "You are currently editing."}
         ></Header>
         <Button onClick={createSession}>Add Session</Button>
       </div>

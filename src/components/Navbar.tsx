@@ -13,6 +13,13 @@ import { MenuIcon, XIcon } from "lucide-react";
 import { ScrollArea } from "./ui/scroll-area";
 import { Icon } from "@iconify/react";
 import { PermissionEnum } from "@/interfaces/permission";
+import { useGetMyScheduleQuery } from "@/features/api/scheduleSlice";
+import { useAtom } from "jotai";
+import { authAtom } from "@/atoms/UserAtom";
+import { skipToken } from "@reduxjs/toolkit/dist/query";
+import Loading from "./Loading";
+import { ErrorMessage } from "./ui/Alert";
+import ScheduleViewer from "@/pages/Schedules/ScheduleViewer";
 
 export interface NavItem {
   text: string;

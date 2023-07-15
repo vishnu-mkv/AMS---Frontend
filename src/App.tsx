@@ -20,6 +20,9 @@ import TopicView from "./pages/Topics/TopicView";
 import RoleView from "./pages/Roles/RoleView";
 import RoleCreator from "./pages/Roles/RoleCreator";
 import UserCreator from "./pages/Users/UserCreator";
+import GroupView from "./pages/Groups/GroupView";
+import UserView from "./pages/Users/UserView";
+import GroupCreator from "./pages/Groups/GroupCreator";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +55,10 @@ const router = createBrowserRouter([
             path: "create",
             element: <UserCreator />,
           },
+          {
+            path: ":id",
+            element: <UserView />,
+          },
         ],
       },
       {
@@ -73,7 +80,20 @@ const router = createBrowserRouter([
       },
       {
         path: "groups",
-        element: <GroupList />,
+        children: [
+          {
+            index: true,
+            element: <GroupList />,
+          },
+          {
+            path: ":id",
+            element: <GroupView />,
+          },
+          {
+            path: "create",
+            element: <GroupCreator />,
+          },
+        ],
       },
       {
         path: "schedules",

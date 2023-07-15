@@ -88,12 +88,13 @@ Message.displayName = "Message";
 export const ErrorMessage = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement> & { error?: any }
->(({ className, error, ...props }, ref) => {
+>(({ className, error, title, ...props }, ref) => {
   return (
     <Message
       ref={ref}
       className={cn("bg-red-500 text-white border-red-500/50", className)}
       message={error ? getErrorMessage(error) : ""}
+      title={title || "Something went wrong"}
       variant={"destructive"}
       {...props}
     />

@@ -27,6 +27,7 @@ function TopicView() {
             subtitle="Topic"
             className="text-white"
             subtitleClassName="text-gray-200"
+            editUrl={`/topics/create?id=${topic.id}`}
           ></Header>
         </ColorBanner>
       )}

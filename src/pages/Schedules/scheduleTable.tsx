@@ -137,7 +137,7 @@ function ScheduleTable({
   return (
     <div className="grid">
       <ScrollArea orientation="horizontal" className="max-w-full">
-        <table className="border-collapse border border-slate-500 table table-fixed min-w-full">
+        <table className="border-collapse border border-slate-500/20 table table-fixed min-w-full rounded-sm overflow-hidden">
           <thead>
             <tr>
               <TableHeader>Days / Time Slot</TableHeader>
@@ -317,7 +317,7 @@ function ScheduleTable({
 
 function TableHeader({ children }: { children: React.ReactNode }) {
   return (
-    <th className="border border-slate-500 p-5 px-3 font-medium bg-secondary/80 min-w-[8em]">
+    <th className="border border-slate-500/20 p-5 px-3 font-medium bg-secondary/80 min-w-[8em]">
       {children}
     </th>
   );
@@ -333,9 +333,10 @@ function TableCell({
   return (
     <td
       className={cn(
-        "border border-slate-500 p-2 px-3 font-normal bg-secondary/40",
+        "border border-slate-500/20 p-2 px-3 font-normal bg-secondary/40 hover:bg-secondary/60",
         {
-          "cursor-pointer hover:bg-secondary/60": onClick !== undefined,
+          "cursor-pointer ": onClick !== undefined,
+          "bg-secondary/20": children === undefined,
         }
       )}
       onClick={onClick}

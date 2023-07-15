@@ -23,11 +23,11 @@ function UserItem({ user }: UserItemProps) {
       <UserAvatar
         user={user}
         size="md"
-        className="rounded-full w-16 h-16"
+        className="rounded-full w-14 h-14"
       ></UserAvatar>
-      <div className="space-y-2 my-1">
+      <div className="space-y-3">
         <Link to={`/users/${user.id}`}>
-          <span className="text-gray-700">
+          <span className="text-gray-800 font-medium text-[15px]">
             {toTitleCase(user.firstName + " " + user.lastName)}
           </span>
         </Link>

@@ -1,4 +1,5 @@
 import { PaginatedQuery } from "./common";
+import { ScheduleSummary } from "./schedule";
 
 export enum Gender {
   "MALE" = 0,
@@ -50,9 +51,17 @@ export interface RoleCreate extends Omit<Role, "id" | "permissions"> {
 export interface Group extends GroupSummary {
   groups: GroupSummary[];
   users: UserSummary[];
+  schedule?: ScheduleSummary | null;
 }
 
-export type GroupCreate = Omit<GroupSummary, "id" | "disabled">;
+export type GroupCreate = Omit<
+  GroupSummary,
+  "id" | "disabled" | "groups" | "users" | "schedule" | "scheduleId"
+> & {
+  users?: string[];
+  groups?: string[];
+  scheduleId?: string;
+};
 
 export interface User {
   id: string;
@@ -68,11 +77,18 @@ export interface User {
   groups: GroupSummary[];
   scheduleId: string | null | undefined;
   userName?: string | null;
+  schedule?: ScheduleSummary;
 }
 
 export type UserCreate = Omit<
   User,
-  "id" | "disabled" | "picture" | "roles" | "groups" | "organization"
+  | "id"
+  | "disabled"
+  | "picture"
+  | "roles"
+  | "groups"
+  | "organization"
+  | "schedule"
 > & {
   roleIds?: string[];
   pictureFile?: File;
@@ -84,13 +100,14 @@ export type roleSummary = Pick<Role, "id" | "name" | "description" | "color">;
 
 export type UserSummary = Pick<
   User,
-  "id" | "firstName" | "lastName" | "picture" | "disabled"
+  "id" | "firstName" | "lastName" | "picture" | "disabled" | "scheduleId"
 > & {
   roles: roleSummary[];
 };
 
 export interface UsersQuery extends PaginatedQuery {
   roles?: string[];
+  scheduleId?: string[];
 }
 
 export interface GroupsQuery extends PaginatedQuery {

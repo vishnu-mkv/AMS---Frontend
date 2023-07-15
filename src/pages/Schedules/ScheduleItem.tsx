@@ -29,7 +29,7 @@ function ScheduleItem({ schedule }: ScheduleItemProps) {
             : {}
         }
       ></div>
-      <div className="space-y-3 my-1">
+      <div className="space-y-2 font-medium my-1">
         <Link to={`/schedules/${schedule.id}`}>
           <span className="text-gray-700">{toTitleCase(schedule.name)}</span>
         </Link>

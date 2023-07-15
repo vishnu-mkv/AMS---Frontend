@@ -4,13 +4,19 @@ import { ErrorMessage } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import Header from "@/components/ui/header";
 import { useGetGroupQuery } from "@/features/api/groupSlice";
-import { Session } from "@/interfaces/schedule";
-import { Group, GroupSummary, UserSummary } from "@/interfaces/user";
+import { ScheduleSummary, Session } from "@/interfaces/schedule";
+import {
+  Group,
+  GroupSummary,
+  UserSummary,
+  roleSummary,
+} from "@/interfaces/user";
 import { cn, toTitleCase } from "@/lib/utils";
 import { DialogClose } from "@radix-ui/react-dialog";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 interface GroupBrowserProps {
   session: Session;
@@ -233,7 +239,55 @@ export function GroupItem({
             : {}
         }
       ></div>
-      <div className="text-sm font-medium">{group.name}</div>
+      {onClick ? (
+        <div className="text-sm font-medium">{group.name}</div>
+      ) : (
+        <Link to={`/groups/${group.id}`} className="text-sm font-medium">
+          {group.name}
+        </Link>
+      )}
+      {onClick && <ChevronRight size="14" className="ml-auto"></ChevronRight>}
+    </div>
+  );
+}
+
+export function RoleItem({
+  role,
+  onClick,
+  className,
+}: {
+  role: roleSummary;
+  onClick?: (id: string) => void;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "flex items-center gap-4 bg-slate-100  cursor-pointer p-2 rounded-sm",
+        className
+      )}
+      onClick={() => {
+        onClick && onClick(role.id);
+      }}
+    >
+      <div
+        className="w-4 h-4 bg-gray-300 rounded-full"
+        style={
+          role.color
+            ? {
+                backgroundColor: role.color,
+              }
+            : {}
+        }
+      ></div>
+      {onClick ? (
+        <div className="text-sm font-medium">{role.name}</div>
+      ) : (
+        <Link to={`/roles/${role.id}`} className="text-sm font-medium">
+          {role.name}
+        </Link>
+      )}
+
       {onClick && <ChevronRight size="14" className="ml-auto"></ChevronRight>}
     </div>
   );
@@ -254,9 +308,51 @@ export function UserItem({
       )}
     >
       <UserAvatar user={user}></UserAvatar>
-      <div className="text-sm font-medium">
+      <Link to={`/users/${user.id}`} className="text-sm font-medium">
         {toTitleCase(user.firstName + " " + user.lastName)}
-      </div>
+      </Link>
+    </div>
+  );
+}
+
+export function ScheduleItem({
+  schedule,
+  onClick,
+  className,
+}: {
+  schedule: ScheduleSummary;
+  onClick?: (id: string) => void;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "flex items-center gap-4 bg-slate-100  cursor-pointer p-2 rounded-sm",
+        className
+      )}
+      onClick={() => {
+        onClick && onClick(schedule.id);
+      }}
+    >
+      <div
+        className="w-4 h-4 bg-gray-300 rounded-full"
+        style={
+          schedule.color
+            ? {
+                backgroundColor: schedule.color,
+              }
+            : {}
+        }
+      ></div>
+      {onClick ? (
+        <div className="text-sm font-medium">{schedule.name}</div>
+      ) : (
+        <Link to={`/schedules/${schedule.id}`} className="text-sm font-medium">
+          {schedule.name}
+        </Link>
+      )}
+
+      {onClick && <ChevronRight size="14" className="ml-auto"></ChevronRight>}
     </div>
   );
 }

@@ -13,33 +13,51 @@ import { cn } from "@/lib/utils";
 import { UserSummary } from "@/interfaces/user";
 import { useAtom } from "jotai";
 import { authAtom } from "@/atoms/UserAtom";
+import { useGetMyScheduleQuery } from "@/features/api/scheduleSlice";
+import { skipToken } from "@reduxjs/toolkit/dist/query";
+import ScheduleViewer from "@/pages/Schedules/ScheduleViewer";
+import Loading from "./Loading";
+import { ErrorMessage } from "./ui/Alert";
+import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 function Profile() {
   const [showMenu, setShowMenu] = React.useState(false);
   const [auth, setAuth] = useAtom(authAtom);
 
   return (
-    <DropdownMenu open={showMenu} onOpenChange={setShowMenu}>
-      <DropdownMenuTrigger className="w-full mx-auto outline-none">
-        <ProfileName user={auth.user!} />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem
-          className="cursor-pointer"
-          onClick={() => {
-            // redirect to home
-            window.location.href = "/auth/login";
-            setAuth({ user: null, token: null });
-            setShowMenu(false);
-          }}
-        >
-          <LogOut className="mr-2 h-4 w-4" />
-          <span>Log out</span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <Dialog>
+      <DropdownMenu open={showMenu} onOpenChange={setShowMenu}>
+        <DropdownMenuTrigger className="w-full mx-auto outline-none">
+          <ProfileName user={auth.user!} />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent>
+          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DialogTrigger>
+            <DropdownMenuItem>
+              <Icon icon="uim:schedule" className="mr-2 h-4 w-4"></Icon>
+              My Schedule
+            </DropdownMenuItem>
+          </DialogTrigger>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => {
+              // redirect to home
+              window.location.href = "/auth/login";
+              setAuth({ user: null, token: null });
+              setShowMenu(false);
+            }}
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>Log out</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <DialogContent>
+        <MyScheduleViewer />
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -80,6 +98,22 @@ export function UserAvatar({ user, size = "sm", className }: UserAvatarProps) {
       <AvatarFallback className="text-xs">{initials}</AvatarFallback>
     </Avatar>
   );
+}
+
+function MyScheduleViewer() {
+  const [{ user }] = useAtom(authAtom);
+
+  const {
+    data: mySchedule,
+    isLoading,
+    error,
+  } = useGetMyScheduleQuery(user?.scheduleId ? undefined : skipToken);
+
+  if (isLoading) return <Loading />;
+
+  if (error) return <ErrorMessage error={error} />;
+
+  return <ScheduleViewer schedule={mySchedule} />;
 }
 
 export default Profile;

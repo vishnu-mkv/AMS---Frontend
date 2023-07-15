@@ -22,7 +22,7 @@ import {
 import { DatePicker } from "@/components/DatePicker";
 import TopicList from "../Topics/TopicList";
 import SessionList from "../Attendance/SessionList";
-import { Group, GroupSummary } from "@/interfaces/user";
+import { Group, GroupSummary, GroupType } from "@/interfaces/user";
 
 import {
   SessionQueryState,
@@ -204,6 +204,7 @@ function RecordQuery() {
                     selectedItems={groups || []}
                     allowSelect={true}
                     mode="multiple"
+                    groupType={GroupType.GroupOfUsers}
                   />
                 }
                 label="Groups"

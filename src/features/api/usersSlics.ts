@@ -69,6 +69,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         return result
           ? [
               { type: "Users", id: "LIST" },
+              { type: "Users", id: result.id },
               ...groupIds.map((id) => ({
                 type: "Groups" as const,
                 id: id as string,
