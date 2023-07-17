@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/Button";
 import { Link, Outlet } from "react-router-dom";
 import clsx from "clsx";
@@ -13,13 +13,6 @@ import { MenuIcon, XIcon } from "lucide-react";
 import { ScrollArea } from "./ui/scroll-area";
 import { Icon } from "@iconify/react";
 import { PermissionEnum } from "@/interfaces/permission";
-import { useGetMyScheduleQuery } from "@/features/api/scheduleSlice";
-import { useAtom } from "jotai";
-import { authAtom } from "@/atoms/UserAtom";
-import { skipToken } from "@reduxjs/toolkit/dist/query";
-import Loading from "./Loading";
-import { ErrorMessage } from "./ui/Alert";
-import ScheduleViewer from "@/pages/Schedules/ScheduleViewer";
 
 export interface NavItem {
   text: string;
@@ -125,6 +118,13 @@ const links: NavItem[] = [
       PermissionEnum.ReadSession,
     ],
   },
+  {
+    text: "Reports",
+    href: "/reports",
+    activeRegex: /^\/reports/,
+    icon: "carbon:report-data",
+    permissions: [PermissionEnum.GetGroupReport],
+  },
 ];
 
 function Navbar() {
@@ -171,6 +171,7 @@ function Navbar() {
                 key={link.href}
                 permissions={link.permissions}
                 loggedIn
+                mode="any"
               >
                 <Link
                   to={link.href}

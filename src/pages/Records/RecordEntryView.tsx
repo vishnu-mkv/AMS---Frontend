@@ -51,13 +51,19 @@ function RecordEntryView() {
               {getTime(attendanceData.slot.timeSlot)}
             </Badge>
           )}
-          {attendanceData.session.topic && (
+          {attendanceData.topic && (
             <Badge variant={"secondary"} className="text-sm">
               <Icon
                 icon="icon-park-solid:topic-discussion"
                 className="mr-2"
               ></Icon>
-              {attendanceData.session.topic?.name}
+              {attendanceData.topic?.name}
+            </Badge>
+          )}
+          {attendanceData?.group?.name && (
+            <Badge variant={"secondary"} className="text-sm">
+              <Icon icon={"mdi:account-group"} className="mr-2"></Icon>
+              {attendanceData.group.name}
             </Badge>
           )}
         </div>

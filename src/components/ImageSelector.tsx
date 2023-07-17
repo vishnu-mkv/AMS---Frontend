@@ -9,7 +9,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { User } from "@/interfaces/user";
 import { getInitials } from "@/lib/utils";
 import { Close } from "@radix-ui/react-dialog";
 import { PencilIcon } from "lucide-react";

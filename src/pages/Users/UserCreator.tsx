@@ -123,7 +123,7 @@ function UserCreator() {
       userName,
     } = newUser;
 
-    if (!firstName || !lastName || !gender || !groups || !roles) return;
+    if (!firstName || !lastName || !groups || !roles) return;
 
     const user: UserCreate = {
       firstName,
@@ -142,6 +142,8 @@ function UserCreator() {
     let formData = new FormData();
 
     Object.keys(user).forEach((key) => {
+      let value = (user as any)[key];
+      if (value === undefined || value === null) return;
       formData.append(key, (user as any)[key]);
     });
 

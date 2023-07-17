@@ -17,9 +17,9 @@ function RecordItem({ record }: RecordItemProps) {
       className="bg-terinary rounded-sm space-y-5 p-3 px-5 gap-10 w-full items-center min-w-[400px]"
     >
       <div className="flex gap-8 items-center py-4 border-b border-b-slate-300 flex-wrap">
-        <ColorAvatar color={record.session.topic?.color}></ColorAvatar>
+        <ColorAvatar color={record.topic?.color}></ColorAvatar>
         <div className="text-gray-700">
-          {record.session.topic?.name || "Unknown Topic"}
+          {record.topic?.name || "Unknown Topic"}
         </div>
       </div>
       <div className="grid grid-cols-[100px_max-content_100px_max-content] gap-x-10 gap-y-5">

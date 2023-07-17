@@ -33,7 +33,7 @@ export const scheduleApiSlice = apiSlice.injectEndpoints({
         url: `/schedules/${id}`,
         method: "GET",
       }),
-      providesTags: (result, error, id) =>
+      providesTags: (result, _, id) =>
         result
           ? [
               { type: "Schedules", id },
@@ -57,7 +57,7 @@ export const scheduleApiSlice = apiSlice.injectEndpoints({
         url: `schedules/myschedule/`,
         method: "GET",
       }),
-      providesTags: (result, error) =>
+      providesTags: (result, _) =>
         result ? [{ type: "Schedules", id: result.id }] : [],
     }),
     getSession: builder.query<Session, string>({
@@ -65,7 +65,7 @@ export const scheduleApiSlice = apiSlice.injectEndpoints({
         url: `/schedules/sessions/${id}`,
         method: "GET",
       }),
-      providesTags: (result, error, id) => [{ type: "Sessions", id }],
+      providesTags: (_, __, id) => [{ type: "Sessions", id }],
     }),
     createSchedule: builder.mutation<ScheduleSummary, ScheduleCreate>({
       query: (data) => ({
@@ -73,7 +73,7 @@ export const scheduleApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: (result, error) => [{ type: "Schedules", id: "LIST" }],
+      invalidatesTags: (_, __) => [{ type: "Schedules", id: "LIST" }],
     }),
     createSession: builder.mutation<SessionSummary, SessionCreate>({
       query: (data) => ({
@@ -81,7 +81,7 @@ export const scheduleApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: (result, error, data) => [
+      invalidatesTags: (_, __, data) => [
         { type: "Sessions", id: "LIST" },
         { type: "Schedules", id: data.scheduleId },
       ],
@@ -95,7 +95,7 @@ export const scheduleApiSlice = apiSlice.injectEndpoints({
         method: "PUT",
         body: data,
       }),
-      invalidatesTags: (result, error, data) => [
+      invalidatesTags: (_, __, data) => [
         { type: "Sessions", id: "LIST" },
         { type: "Schedules", id: data.scheduleId },
       ],
@@ -109,7 +109,7 @@ export const scheduleApiSlice = apiSlice.injectEndpoints({
         method: "PUT",
         body: data,
       }),
-      invalidatesTags: (result, error, data) =>
+      invalidatesTags: (result, _, data) =>
         result
           ? [
               { type: "Schedules", id: data.id },
@@ -122,7 +122,7 @@ export const scheduleApiSlice = apiSlice.injectEndpoints({
         url: `/schedules/sessions/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: (result, error, { id, scheduleId }) =>
+      invalidatesTags: (result, _, { id, scheduleId }) =>
         result
           ? [
               { type: "Sessions", id: "LIST" },
@@ -140,7 +140,7 @@ export const scheduleApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body: data,
       }),
-      invalidatesTags: (result, error, data) =>
+      invalidatesTags: (result, _, data) =>
         result ? [{ type: "Schedules", id: data.scheduleId }] : [],
     }),
     deleteTimeSlot: builder.mutation<void, { id: string; scheduleId: string }>({
@@ -148,7 +148,7 @@ export const scheduleApiSlice = apiSlice.injectEndpoints({
         url: `/schedules/${scheduleId}/timeslots/${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: (result, error, { id, scheduleId }) =>
+      invalidatesTags: (result, _, { scheduleId }) =>
         result ? [{ type: "Schedules", id: scheduleId }] : [],
     }),
     updateTimeSlot: builder.mutation<
@@ -160,7 +160,7 @@ export const scheduleApiSlice = apiSlice.injectEndpoints({
         method: "PUT",
         body: data,
       }),
-      invalidatesTags: (result, error, data) =>
+      invalidatesTags: (result, _, data) =>
         result ? [{ type: "Schedules", id: data.scheduleId }] : [],
     }),
   }),

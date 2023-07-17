@@ -34,6 +34,7 @@ function ScheduleViewer({ schedule: _schedule }: { schedule?: Schedule }) {
               className="text-white mb-2"
               subtitleClassName="text-white"
               subtitle={`${schedule.days.length} days / week`}
+              editUrl={`/schedules/create?id=${schedule.id}`}
             ></Header>
           </ColorBanner>
           <ScheduleTable schedule={schedule} />

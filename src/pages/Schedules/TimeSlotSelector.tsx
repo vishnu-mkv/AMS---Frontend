@@ -23,7 +23,7 @@ interface TimeSlotSelectorProps {
   timeSlots: TimeSlot[];
   setTimeSlots: (timeSlots: TimeSlot[]) => void;
   formMode?: "create" | "edit";
-  scheduleId: string;
+  scheduleId?: string;
 }
 
 const defaultTimeSlot: TimeSlot = {
@@ -57,11 +57,14 @@ function TimeSlotSelector({
     slots.push(newTimeSlot as TimeSlot);
 
     if (mode === "create") {
+      console.log("create", { newTimeSlot });
       setNewTimeSlot({ ...defaultTimeSlot, id: uuidv4() });
+      setTimeSlots(slots);
     }
   }
 
   function onTimeSlotDelete(id: string) {
+    if (!scheduleId) return;
     if (formMode !== "edit") {
       setTimeSlots(timeSlots.filter((t) => t.id !== id));
       return;

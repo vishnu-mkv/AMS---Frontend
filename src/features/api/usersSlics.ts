@@ -1,4 +1,4 @@
-import { User, UserCreate, UserSummary, UsersQuery } from "@/interfaces/user";
+import { User, UserSummary, UsersQuery } from "@/interfaces/user";
 import { apiSlice } from "../apiSlice";
 import { buildQuery } from "@/lib/utils";
 import { PaginatedResponse } from "@/interfaces/common";
@@ -28,8 +28,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         url: `/users/${id}`,
         method: "GET",
       }),
-      providesTags: (result, error, id) =>
-        result ? [{ type: "Users", id }] : [],
+      providesTags: (result, _, id) => (result ? [{ type: "Users", id }] : []),
     }),
     createUser: builder.mutation<User, FormData>({
       query: (body) => ({
@@ -37,7 +36,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: (result, error, formdata) => {
+      invalidatesTags: (result, _, formdata) => {
         const groupIds = formdata.getAll("groupIds");
         const roleIds = formdata.getAll("roleIds");
 
@@ -62,7 +61,7 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         method: "PATCH",
         body: data,
       }),
-      invalidatesTags: (result, error, { data }) => {
+      invalidatesTags: (result, _, { data }) => {
         const groupIds = data.getAll("groupIds");
         const roleIds = data.getAll("roleIds");
 

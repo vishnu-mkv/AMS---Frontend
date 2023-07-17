@@ -24,7 +24,7 @@ export const topicsApiSlice = apiSlice.injectEndpoints({
         url: `/topics/${id}`,
         method: "GET",
       }),
-      providesTags: (result, error, id) => [{ type: "Topics", id }],
+      providesTags: (_, __, id) => [{ type: "Topics", id }],
     }),
     createTopic: builder.mutation<TopicSummary, CreateTopic>({
       query: (body) => ({
@@ -43,7 +43,7 @@ export const topicsApiSlice = apiSlice.injectEndpoints({
         method: "PUT",
         body,
       }),
-      invalidatesTags: (result, error, { id }) =>
+      invalidatesTags: (result, _, { id }) =>
         result ? [{ type: "Topics", id }] : [],
     }),
   }),

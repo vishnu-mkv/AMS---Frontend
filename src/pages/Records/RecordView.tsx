@@ -9,9 +9,9 @@ import { AttendanceQuery } from "@/interfaces/attendance";
 import moment from "moment";
 import Loading from "@/components/Loading";
 import { ErrorMessage } from "@/components/ui/Alert";
-import RecordItem from "./RecordItem";
-import Pagination from "@/components/Pagination";
 import RecordQuery from "./RecordQuery";
+import { DataTable } from "@/components/data-table";
+import { recordCols } from "./columns";
 
 function RecordView() {
   return (
@@ -89,7 +89,7 @@ function RecordList() {
 
   return (
     <div className="space-y-5">
-      <div className="grid gap-5 md:grid-cols-2">
+      {/* <div className="grid gap-5 md:grid-cols-2">
         {records?.docs?.map((r) => {
           return <RecordItem record={r} />;
         })}
@@ -101,7 +101,16 @@ function RecordList() {
           console.log(page);
           setPage(page);
         }}
-      />
+      /> */}
+      {records && (
+        <DataTable
+          columns={recordCols}
+          data={records}
+          onPageChange={(page) => {
+            setPage(page);
+          }}
+        ></DataTable>
+      )}
     </div>
   );
 }

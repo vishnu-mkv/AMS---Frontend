@@ -1,8 +1,8 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Schedule, Session, TimeSlot, getTime } from "@/interfaces/schedule";
-import { cn, getDayNames } from "@/lib/utils";
+import { cn, getDayNames, sortTimeSlots } from "@/lib/utils";
 import { CheckIcon, ChevronLeft, ChevronRight, PencilIcon } from "lucide-react";
-import React, { useEffect, useMemo, useState } from "react";
+import { HTMLProps, useEffect, useMemo, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -79,13 +79,20 @@ function ScheduleTable({
 
   // time slot index - hash map of time slot id to index
 
+  const timeSlots = useMemo(() => {
+    let timeSlots: TimeSlot[] = [...schedule.timeSlots];
+
+    timeSlots = sortTimeSlots(timeSlots);
+    return timeSlots;
+  }, [schedule.timeSlots]);
+
   const TimeSlotIndex = useMemo(() => {
     const timeSlotIndex: Map<string, number> = new Map();
-    for (let i = 0; i < schedule.timeSlots.length; i++) {
-      timeSlotIndex.set(schedule.timeSlots[i].id, i);
+    for (let i = 0; i < timeSlots.length; i++) {
+      timeSlotIndex.set(timeSlots[i].id, i);
     }
     return timeSlotIndex;
-  }, [schedule.timeSlots]);
+  }, [timeSlots]);
 
   const [tableData, setTableData] = useState<TableData>([]);
 
@@ -99,9 +106,9 @@ function ScheduleTable({
     // create array and fill it with all timeslots empty sessions
     for (let i = 0; i < schedule.days.length; i++) {
       tableData[i] = [];
-      for (let j = 0; j < schedule.timeSlots.length; j++) {
+      for (let j = 0; j < timeSlots.length; j++) {
         tableData[i][j] = {
-          timeSlot: schedule.timeSlots[j],
+          timeSlot: timeSlots[j],
           sessions: [],
           activeIndex: 0,
         };
@@ -115,7 +122,7 @@ function ScheduleTable({
       for (let j = 0; j < session.slots.length; j++) {
         const slot = session.slots[j];
         const dayIndex = DayIndex.get(slot.day);
-        const timeSlot = schedule.timeSlots.find(
+        const timeSlot = timeSlots.find(
           (timeSlot) => timeSlot.id === slot.timeSlotId
         );
         if (timeSlot === undefined) continue;
@@ -126,7 +133,7 @@ function ScheduleTable({
     }
 
     setTableData(tableData);
-  }, [schedule]);
+  }, [schedule, timeSlots]);
 
   if (tableData.length === 0) return <div></div>;
 
@@ -141,8 +148,10 @@ function ScheduleTable({
           <thead>
             <tr>
               <TableHeader>Days / Time Slot</TableHeader>
-              {schedule.timeSlots.map((slot) => (
-                <TableHeader>{getTime(slot)}</TableHeader>
+              {timeSlots.map((slot) => (
+                <TableHeader className=" min-w-[8em]">
+                  {getTime(slot)}
+                </TableHeader>
               ))}
             </tr>
           </thead>
@@ -315,21 +324,30 @@ function ScheduleTable({
   );
 }
 
-function TableHeader({ children }: { children: React.ReactNode }) {
+export function TableHeader({
+  children,
+  className,
+  ...props
+}: HTMLProps<HTMLTableCellElement>) {
   return (
-    <th className="border border-slate-500/20 p-5 px-3 font-medium bg-secondary/80 min-w-[8em]">
+    <th
+      className={cn(
+        "border border-slate-500/20 p-5 px-3 font-medium bg-secondary/80",
+        className
+      )}
+      {...props}
+    >
       {children}
     </th>
   );
 }
 
-function TableCell({
+export function TableCell({
   children,
   onClick,
-}: {
-  children?: React.ReactNode;
-  onClick?: () => void;
-}) {
+  className,
+  ...props
+}: HTMLProps<HTMLTableCellElement> & { onClick?: () => void }) {
   return (
     <td
       className={cn(
@@ -337,9 +355,11 @@ function TableCell({
         {
           "cursor-pointer ": onClick !== undefined,
           "bg-secondary/20": children === undefined,
-        }
+        },
+        className
       )}
       onClick={onClick}
+      {...props}
     >
       {children}
     </td>

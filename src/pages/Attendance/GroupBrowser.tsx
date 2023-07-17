@@ -16,7 +16,7 @@ import { DialogClose } from "@radix-ui/react-dialog";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import { ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 interface GroupBrowserProps {
   session: Session;

@@ -1,5 +1,5 @@
 import { PaginatedQuery } from "./common";
-import { ScheduleSummary, SessionSummary, Slot } from "./schedule";
+import { ScheduleSummary, Slot, TopicSummary } from "./schedule";
 import { GroupSummary, UserSummary } from "./user";
 
 export interface AttendanceStatus {
@@ -25,7 +25,7 @@ export interface AttendanceQuery extends PaginatedQuery {
 export interface RecordSummary {
   id: string;
   recordedForDate: Date;
-  sessionId: string;
+  topicId: string;
   created: Date;
   group: GroupSummary;
   scheduleId: string;
@@ -37,7 +37,7 @@ export interface RecordWithoutEntries {
   recordedFor: string;
   schedule: ScheduleSummary;
   created: string;
-  session: Omit<SessionSummary, "slots">;
+  topic: TopicSummary;
   group: GroupSummary;
   slot: Slot;
 }
@@ -53,7 +53,7 @@ export interface Record {
   schedule: ScheduleSummary;
   recordedFor: Date;
   created: Date;
-  session: SessionSummary;
+  topic: TopicSummary;
   group: GroupSummary;
   slot: Slot;
   records: UserRecord[];

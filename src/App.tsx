@@ -23,6 +23,7 @@ import UserCreator from "./pages/Users/UserCreator";
 import GroupView from "./pages/Groups/GroupView";
 import UserView from "./pages/Users/UserView";
 import GroupCreator from "./pages/Groups/GroupCreator";
+import ViewReport from "./pages/Report/ViewReport";
 
 const router = createBrowserRouter([
   {
@@ -148,6 +149,15 @@ const router = createBrowserRouter([
           {
             path: ":id",
             element: <RecordEntryView />,
+          },
+        ],
+      },
+      {
+        path: "reports",
+        children: [
+          {
+            index: true,
+            element: <ViewReport />,
           },
         ],
       },

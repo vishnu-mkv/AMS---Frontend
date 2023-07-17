@@ -50,5 +50,5 @@ export const apiSlice = createApi({
     "Records",
     "Permissions",
   ],
-  endpoints: (builder) => ({}),
+  endpoints: (_) => ({}),
 });

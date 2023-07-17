@@ -34,7 +34,7 @@ export const groupApiSlice = apiSlice.injectEndpoints({
         url: `/groups/${id}`,
         method: "GET",
       }),
-      providesTags: (result, error, id) => [{ type: "Groups", id }],
+      providesTags: (_, __, id) => [{ type: "Groups", id }],
     }),
     createGroup: builder.mutation<Group, GroupCreate>({
       query: (body) => ({
@@ -51,7 +51,7 @@ export const groupApiSlice = apiSlice.injectEndpoints({
           method: "PUT",
           body,
         }),
-        invalidatesTags: (result, error, { id }) =>
+        invalidatesTags: (result, _, { id }) =>
           result ? [{ type: "Groups", id }] : [],
       }
     ),

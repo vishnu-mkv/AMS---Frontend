@@ -8,7 +8,7 @@ import { useLoginMutation } from "@/features/api/authSlice";
 import { getFormData } from "@/lib/utils";
 import * as Form from "@radix-ui/react-form";
 import { useAtom } from "jotai";
-import { FormEvent, FormEventHandler, useEffect } from "react";
+import { FormEvent, useEffect } from "react";
 import { useNavigate } from "react-router";
 import { useSearchParams } from "react-router-dom";
 

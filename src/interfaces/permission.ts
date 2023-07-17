@@ -38,4 +38,5 @@ export enum PermissionEnum {
   ReadAttendance = "read-attendance",
   DeleteAttendance = "delete-attendance",
   ListAttendanceStatuses = "list-attendance-statuses",
+  GetGroupReport = "get-group-report",
 }

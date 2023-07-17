@@ -10,6 +10,7 @@ import {
   RecordWithoutEntries,
 } from "@/interfaces/attendance";
 import { buildQuery } from "@/lib/utils";
+import { AttendanceReportQuery, GroupReport } from "@/interfaces/report";
 
 export const attendanceApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -53,7 +54,7 @@ export const attendanceApiSlice = apiSlice.injectEndpoints({
         url: `/attendance/${id}`,
         method: "GET",
       }),
-      providesTags: (result, error, id) => [{ type: "Attendance", id }],
+      providesTags: (_, __, id) => [{ type: "Attendance", id }],
     }),
     addAttendance: builder.mutation<RecordSummary, AddAttendance>({
       query: (body) => ({
@@ -69,10 +70,21 @@ export const attendanceApiSlice = apiSlice.injectEndpoints({
         method: "PUT",
         body,
       }),
-      invalidatesTags: (result, error, { AttendanceId: id }) => [
+      invalidatesTags: (_, __, { AttendanceId: id }) => [
         { type: "Attendance", id },
         { type: "Attendance", id: "LIST" },
       ],
+    }),
+    getReport: builder.query<GroupReport, AttendanceReportQuery>({
+      query: (query) => ({
+        url:
+          "/attendance/group-report" + (query ? "?" + buildQuery(query) : ""),
+        method: "GET",
+      }),
+      providesTags: (result) =>
+        result
+          ? [{ type: "Attendance", id: "LIST" }]
+          : [{ type: "Attendance", id: "LIST" }],
     }),
   }),
   overrideExisting: false,
@@ -84,4 +96,5 @@ export const {
   useGetAttendanceQuery,
   useAddAttendanceMutation,
   useUpdateAttendanceMutation,
+  useGetReportQuery,
 } = attendanceApiSlice;

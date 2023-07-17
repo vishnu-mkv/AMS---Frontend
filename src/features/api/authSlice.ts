@@ -32,8 +32,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
     }),
     getRole: builder.query<RoleDetail, string>({
       query: (id) => `/auth/roles/${id}`,
-      providesTags: (result, error, id) =>
-        result ? [{ type: "Roles", id }] : [],
+      providesTags: (result, _, id) => (result ? [{ type: "Roles", id }] : []),
     }),
 
     createRole: builder.mutation<RoleDetail, RoleCreate>({
@@ -42,7 +41,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: (result, error) =>
+      invalidatesTags: (result, _) =>
         result ? [{ type: "Roles", id: "LIST" }] : [],
     }),
 
@@ -55,7 +54,7 @@ export const authApiSlice = apiSlice.injectEndpoints({
         method: "PATCH",
         body,
       }),
-      invalidatesTags: (result, error, { id }) =>
+      invalidatesTags: (result, _, { id }) =>
         result ? [{ type: "Roles", id }] : [],
     }),
     getPermissions: builder.query<Permission[], void>({

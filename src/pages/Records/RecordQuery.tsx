@@ -1,17 +1,10 @@
 import MultiSelector from "@/components/MultiSelector";
-import {
-  ScheduleSummary,
-  Session,
-  TopicSummary,
-  getTime,
-} from "@/interfaces/schedule";
-import { useMemo } from "react";
+import { ScheduleSummary, TopicSummary, getTime } from "@/interfaces/schedule";
 import ScheduleList from "../Schedules/ScheduleList";
 import { Label } from "@/components/ui/label";
 import { useGetScheduleQuery } from "@/features/api/scheduleSlice";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
-import { ErrorMessage, Message } from "@/components/ui/Alert";
-import Loading from "@/components/Loading";
+import { ErrorMessage } from "@/components/ui/Alert";
 import {
   Select,
   SelectContent,
@@ -19,10 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DatePicker } from "@/components/DatePicker";
 import TopicList from "../Topics/TopicList";
-import SessionList from "../Attendance/SessionList";
-import { Group, GroupSummary, GroupType } from "@/interfaces/user";
+import { GroupSummary, GroupType } from "@/interfaces/user";
 
 import {
   SessionQueryState,
@@ -30,10 +21,11 @@ import {
 } from "../Attendance/SessionQueryContext";
 import { DateRangePicker } from "@/components/DateRangePicker";
 import GroupList from "../Groups/GroupList";
+import Loading from "@/components/Loading";
 
 function RecordQuery() {
   const { state, setState } = useSessionQuery();
-  const { schedule, timeSlots, topics, sessions, groups, date } = state;
+  const { schedule, timeSlots, topics, groups, date } = state;
 
   function updateState(newState: Partial<SessionQueryState>) {
     setState({
@@ -47,6 +39,8 @@ function RecordQuery() {
     isLoading: scheduleLoading,
     error: scheduleError,
   } = useGetScheduleQuery(schedule?.id ?? skipToken);
+
+  if (scheduleLoading) return <Loading />;
 
   return (
     <div className="space-y-7">
@@ -117,7 +111,7 @@ function RecordQuery() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-2">
+              <div className="space-y-5">
                 <Label>Date</Label>
                 <DateRangePicker
                   date={date ? { from: date[0], to: date[1] } : undefined}
@@ -156,7 +150,7 @@ function RecordQuery() {
                 }}
                 mode={"multiple"}
               ></MultiSelector>
-              <MultiSelector<Session>
+              {/* <MultiSelector<Session>
                 dialogContent={
                   <SessionList
                     onSelect={(sessions) =>
@@ -188,7 +182,7 @@ function RecordQuery() {
                     sessions,
                   })
                 }
-              ></MultiSelector>
+              ></MultiSelector> */}
               <MultiSelector<GroupSummary>
                 dialogContent={
                   <GroupList
