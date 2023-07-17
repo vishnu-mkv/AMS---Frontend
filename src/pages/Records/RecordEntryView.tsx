@@ -40,7 +40,7 @@ function RecordEntryView() {
         />
       )}
       {attendanceData && (
-        <div className="flex gap-5">
+        <div className="flex gap-4 flex-wrap">
           <Badge variant={"secondary"} className="text-sm">
             <CalendarIcon size="16" className="mr-2"></CalendarIcon>
             {moment(attendanceData.recordedFor).format("DD MMM YYYY")}

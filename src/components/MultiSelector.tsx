@@ -75,7 +75,7 @@ function MultiSelector<T>(props: MultiSelectorProps<T>) {
               <SearchIcon className="w-4 h-4"></SearchIcon>
             </Button>
           </DialogTrigger>
-          <DialogContent className=" w-fit p-5 ">{dialogContent}</DialogContent>
+          <DialogContent className=" w-fit ">{dialogContent}</DialogContent>
         </Dialog>
       </div>
       {(!mode || mode === "multiple") &&

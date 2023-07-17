@@ -116,6 +116,11 @@ function ListSelector<T>(props: ListSelectorProps<T>) {
           <div className="grow">{renderItem(item)}</div>
         </div>
       ))}
+      {itemsToShow.length === 0 && (
+        <div className="text-gray-500 text-center my-3 text-sm">
+          No items to show
+        </div>
+      )}
     </div>
   );
 }

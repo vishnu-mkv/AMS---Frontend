@@ -20,8 +20,8 @@ function SessionItem({ session, showCanTakeAttendance }: SessionItemProps) {
   const [auth] = useAtom(authAtom);
 
   return (
-    <div className="bg-terinary rounded-sm space-y-5 p-3 px-5 gap-10 w-full items-center min-w-[400px]">
-      <div className="flex gap-8 items-center py-4 border-b border-b-slate-300 flex-wrap">
+    <div className="bg-terinary rounded-sm space-y-5 p-3 px-5 gap-10 w-full items-center sm:min-w-[400px]">
+      <div className="flex gap-4 md:gap-8 items-center py-4 border-b border-b-slate-300 flex-wrap">
         <ColorAvatar color={session.topic?.color}></ColorAvatar>
         <div className="text-gray-700">
           {session.topic?.name || "Unknown Topic"}
@@ -42,7 +42,7 @@ function SessionItem({ session, showCanTakeAttendance }: SessionItemProps) {
         </div>
 
         <span className="text-sm text-gray-500">Days : </span>
-        <div className="flex gap-1">
+        <div className="flex gap-2 flex-wrap">
           {getDayNames(days).map((day) => (
             <Badge variant={"secondary"} key={session.id + "-" + day}>
               {toTitleCase(day)}

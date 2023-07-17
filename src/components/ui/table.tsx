@@ -17,6 +17,7 @@ interface TableProps extends React.HTMLAttributes<HTMLTableElement> {
   showBorder?: boolean;
   centerHeader?: boolean;
   showHeaderBg?: boolean;
+  wrapperClassName?: string;
 }
 
 const Table: React.FC<TableProps> = ({
@@ -24,15 +25,16 @@ const Table: React.FC<TableProps> = ({
   centerHeader = false,
   showHeaderBg = false,
   className,
+  wrapperClassName,
   ...props
 }) => {
   return (
-    <div className="w-full overflow-auto">
+    <div className={cn("w-full overflow-auto", wrapperClassName)}>
       <TableContext.Provider value={{ showBorder, centerHeader, showHeaderBg }}>
         <table
           className={cn(
             "w-full caption-bottom text-sm",
-            showBorder && "border ",
+            showBorder && "border border-separate",
             className
           )}
           {...props}
@@ -50,7 +52,7 @@ const TableHeader: React.FC<React.HTMLAttributes<HTMLTableSectionElement>> = ({
 
   return (
     <thead
-      className={cn("border-b", showHeaderBg && "bg-gray-300/20", className)}
+      className={cn("border-b", showHeaderBg && "bg-gray-100/10", className)}
       {...props}
     />
   );
@@ -96,25 +98,26 @@ const TableRow: React.FC<React.HTMLAttributes<HTMLTableRowElement>> = ({
   );
 };
 
-const TableHead: React.FC<React.ThHTMLAttributes<HTMLTableCellElement>> = ({
-  className,
-  ...props
-}) => {
-  const { showBorder, centerHeader } = useContext(TableContext);
+const TableHead = React.forwardRef<
+  HTMLTableCellElement,
+  React.ThHTMLAttributes<HTMLTableCellElement>
+>(({ className, ...props }, ref) => {
+  const { showBorder, centerHeader, showHeaderBg } = useContext(TableContext);
 
   return (
     <th
+      ref={ref}
       className={cn(
         "h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0",
-        showBorder && "border-r ",
+        showBorder && "border-0 border-b border-r",
         centerHeader && "text-center",
-
+        showHeaderBg && "bg-slate-100",
         className
       )}
       {...props}
     />
   );
-};
+});
 
 const TableCell: React.FC<React.TdHTMLAttributes<HTMLTableCellElement>> = ({
   className,
@@ -126,7 +129,7 @@ const TableCell: React.FC<React.TdHTMLAttributes<HTMLTableCellElement>> = ({
     <td
       className={cn(
         "p-4 align-middle [&:has([role=checkbox])]:pr-0",
-        showBorder && "border",
+        showBorder && "border-0 border-b border-r",
         className
       )}
       {...props}

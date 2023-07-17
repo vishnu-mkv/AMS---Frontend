@@ -64,7 +64,7 @@ function GroupList(props: GroupListProps) {
   }, [selectedSchedules]);
 
   return (
-    <div className="space-y-7 max-w-[600px] mx-auto">
+    <div className="space-y-7 md:max-w-[600px] mx-auto">
       <div className="flex items-center justify-between">
         <Header
           title={allowSelect ? "Select Groups" : "Groups"}

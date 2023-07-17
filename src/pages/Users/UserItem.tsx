@@ -19,7 +19,7 @@ interface UserItemProps {
 
 function UserItem({ user }: UserItemProps) {
   return (
-    <div className="bg-terinary rounded-sm flex p-3 px-5 gap-10 w-full items-center min-w-[400px]">
+    <div className="bg-terinary rounded-sm flex p-3 px-5 gap-5 md:gap-10 w-full items-center sm:min-w-[400px]">
       <UserAvatar
         user={user}
         size="md"

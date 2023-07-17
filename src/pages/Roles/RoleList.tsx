@@ -19,7 +19,7 @@ function RoleList(props: ListProps<roleSummary>) {
   const { data: roles, isLoading, error } = useListRolesQuery();
 
   return (
-    <div className="space-y-7 max-w-[600px] mx-auto">
+    <div className="space-y-7 md:max-w-[600px] mx-auto">
       <div className="flex items-center justify-between">
         <Header
           title={allowSelect ? "Select Roles" : "Roles"}

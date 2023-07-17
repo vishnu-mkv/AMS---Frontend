@@ -8,7 +8,7 @@ import { GroupSummary, GroupType } from "@/interfaces/user";
 import GroupList from "../Groups/GroupList";
 import Loading from "@/components/Loading";
 import { ErrorMessage } from "@/components/ui/Alert";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useGetReportQuery } from "@/features/api/attendanceSlice";
 import Header from "@/components/ui/header";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -80,7 +80,7 @@ function ReportQuery() {
 
   return (
     <div className="space-y-5 @container">
-      <div className="grid gap-7 @[700px]:grid-cols-2 @[1200px]:grid-cols-3">
+      <div className="space-y-7 md:space-y-0 md:grid md:gap-7 @[700px]:grid-cols-2 @[1200px]:grid-cols-3">
         <MultiSelector<GroupSummary>
           dialogContent={
             <GroupList
@@ -158,6 +158,9 @@ function GroupReport() {
     dates,
     groupView,
     attendanceStatuses,
+    cellRefs,
+    rowStyles,
+    columnStyles,
   } = useReportQuery();
   const Group = groupView?.data;
 
@@ -177,99 +180,136 @@ function GroupReport() {
 
   return (
     <div className="grid my-5">
-      <ScrollArea orientation="horizontal" className="max-w-full">
-        <Table showBorder centerHeader showHeaderBg id="report-table">
-          <TableHeader>
-            <TableRow>
-              {/* group color */}
-              <TableHead className="sticky"></TableHead>
+      {/* <ScrollArea orientation="horizontal" className="max-w-full"> */}
+      <Table
+        showBorder
+        centerHeader
+        showHeaderBg
+        id="report-table"
+        className="relative "
+        wrapperClassName="max-h-[calc(100vh-70px)]"
+      >
+        <TableHeader>
+          <TableRow>
+            {/* group color */}
+            <TableHead
+              className="!z-2"
+              ref={cellRefs[0]}
+              style={{ ...columnStyles[0], top: 0, zIndex: 5 }}
+            ></TableHead>
 
-              <TableHead className="text-left sticky">Dates</TableHead>
-              {dates.map((date) => (
-                <TableHead
-                  colSpan={timeSlots.length * attendanceStatuses.length}
-                  key={date.toString()}
-                >
-                  <HoverCard>
-                    <HoverCardTrigger>
-                      {moment(date).format("DD MMMM, YYYY")}
-                    </HoverCardTrigger>
-                    <HoverCardContent>
-                      {/* day name */}
-                      <div className="text-gray-700">
-                        {moment(date).format("dddd")}
-                      </div>
-                    </HoverCardContent>
-                  </HoverCard>
-                </TableHead>
-              ))}
-            </TableRow>
-            <TableRow>
-              {/* group color */}
-              <TableHead></TableHead>
-              <TableHead className="text-left">Slots</TableHead>
-              {/* for each, display all timeslots */}
-              {dates.map((date) => {
-                return timeSlots
-                  .map((slot, index) => (
+            <TableHead
+              className="text-left"
+              style={{ ...columnStyles[1], top: 0, zIndex: 5 }}
+            >
+              Dates
+            </TableHead>
+            {dates.map((date) => (
+              <TableHead
+                colSpan={timeSlots.length * attendanceStatuses.length}
+                key={date.toString()}
+                style={rowStyles[0]}
+              >
+                <HoverCard>
+                  <HoverCardTrigger>
+                    {moment(date).format("DD MMMM, YYYY")}
+                  </HoverCardTrigger>
+                  <HoverCardContent>
+                    {/* day name */}
+                    <div className="text-gray-700">
+                      {moment(date).format("dddd")}
+                    </div>
+                  </HoverCardContent>
+                </HoverCard>
+              </TableHead>
+            ))}
+          </TableRow>
+          <TableRow>
+            {/* group color */}
+            <TableHead
+              ref={cellRefs[1]}
+              style={{ ...columnStyles[0], top: rowStyles[1].top, zIndex: 5 }}
+            ></TableHead>
+            <TableHead
+              className="text-left"
+              style={{ ...columnStyles[1], top: rowStyles[1].top, zIndex: 5 }}
+            >
+              Slots
+            </TableHead>
+            {/* for each, display all timeslots */}
+            {dates.map((date) => {
+              return timeSlots
+                .map((slot, index) => (
+                  <TableHead
+                    key={date.toString() + slot.id.toString()}
+                    colSpan={attendanceStatuses.length}
+                    style={rowStyles[1]}
+                  >
+                    <HoverCard>
+                      <HoverCardTrigger>{index + 1}</HoverCardTrigger>
+                      <HoverCardContent>
+                        {/* day name */}
+                        <div className="text-gray-700">{getTime(slot)}</div>
+                      </HoverCardContent>
+                    </HoverCard>
+                  </TableHead>
+                ))
+                .flat();
+            })}
+          </TableRow>
+          <TableRow>
+            {/* group color */}
+            <TableHead
+              style={{ ...columnStyles[0], top: rowStyles[2].top, zIndex: 5 }}
+            ></TableHead>
+
+            <TableHead
+              className="text-left"
+              style={{ ...columnStyles[1], top: rowStyles[2].top, zIndex: 5 }}
+            >
+              Status
+            </TableHead>
+            {/* for each, display all timeslots */}
+            {dates.map((date) => {
+              return timeSlots
+                .map((slot) =>
+                  attendanceStatuses.map((status) => (
                     <TableHead
-                      key={date.toString() + slot.id.toString()}
-                      colSpan={attendanceStatuses.length}
+                      key={
+                        date.toString() +
+                        slot.id.toString() +
+                        status.id.toString()
+                      }
+                      style={rowStyles[2]}
                     >
                       <HoverCard>
-                        <HoverCardTrigger>{index + 1}</HoverCardTrigger>
+                        <HoverCardTrigger>{status.shortName}</HoverCardTrigger>
                         <HoverCardContent>
                           {/* day name */}
-                          <div className="text-gray-700">{getTime(slot)}</div>
+                          <div className="text-gray-700">{status.name}</div>
                         </HoverCardContent>
                       </HoverCard>
                     </TableHead>
                   ))
-                  .flat();
-              })}
-            </TableRow>
-            <TableRow>
-              {/* group color */}
-              <TableHead></TableHead>
-
-              <TableHead className="text-left">Status</TableHead>
-              {/* for each, display all timeslots */}
-              {dates.map((date) => {
-                return timeSlots
-                  .map((slot) =>
-                    attendanceStatuses.map((status) => (
-                      <TableHead
-                        key={
-                          date.toString() +
-                          slot.id.toString() +
-                          status.id.toString()
-                        }
-                      >
-                        <HoverCard>
-                          <HoverCardTrigger>
-                            {status.shortName}
-                          </HoverCardTrigger>
-                          <HoverCardContent>
-                            {/* day name */}
-                            <div className="text-gray-700">{status.name}</div>
-                          </HoverCardContent>
-                        </HoverCard>
-                      </TableHead>
-                    ))
-                  )
-                  .flat();
-              })}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {groupState?.isLoading ? (
-              <Loading />
-            ) : (
-              <GroupRow id={Group.id} isRoot={true} current={groupView} />
-            )}
-          </TableBody>
-        </Table>
-      </ScrollArea>
+                )
+                .flat();
+            })}
+          </TableRow>
+        </TableHeader>
+        <TableBody
+          className="snap-y snap-mandatory"
+          // style={{
+          //   scrollPaddingTop: rowStyles[2].top,
+          // }}
+        >
+          {groupState?.isLoading ? (
+            <Loading />
+          ) : (
+            <GroupRow id={Group.id} isRoot={true} current={groupView} />
+          )}
+        </TableBody>
+      </Table>
+      {/* </ScrollArea> */}
     </div>
   );
 }
@@ -298,6 +338,7 @@ function GroupRow({
     attendanceStatuses,
     timeSlots,
     updateGroupView,
+    columnStyles,
   } = useReportQuery();
 
   const {
@@ -358,9 +399,9 @@ function GroupRow({
 
   return (
     <>
-      <tr>
+      <TableRow className="snap-start ">
         {/* group color */}
-        <TableHead>
+        <TableHead style={columnStyles[0]}>
           <Indent level={current?.level}>
             <ColorAvatar
               color={groupReport?.group.color}
@@ -369,11 +410,14 @@ function GroupRow({
           </Indent>
         </TableHead>
         <TableHead
-          className="whitespace-nowrap border cursor-pointer text-left"
+          className="whitespace-nowrap cursor-pointer text-left"
           onClick={expandChildren}
+          style={columnStyles[1]}
         >
           <Indent level={current?.level} showArrows={false}>
-            {groupReport?.group.name}
+            <span className="font-medium text-gray-950">
+              {groupReport?.group.name}
+            </span>
           </Indent>
         </TableHead>
 
@@ -397,7 +441,7 @@ function GroupRow({
             )
             .flat();
         })}
-      </tr>
+      </TableRow>
       {current.children.map((x) => (
         <GroupRow key={x.id} id={x.id} current={x} isRoot={false} />
       ))}
@@ -415,7 +459,8 @@ function UsersGroup({
   groupId: string;
   parent: GroupView;
 }) {
-  const { getQuery, dates, attendanceStatuses, timeSlots } = useReportQuery();
+  const { getQuery, dates, attendanceStatuses, timeSlots, columnStyles } =
+    useReportQuery();
 
   const { data: groupReport } = useGetReportQuery({
     ...getQuery(),
@@ -452,13 +497,16 @@ function UsersGroup({
   return (
     <>
       {groupReport?.userReports.map((userReport) => (
-        <tr key={userReport.user.id}>
-          <TableHead>
+        <TableRow key={userReport.user.id} className="snap-start">
+          <TableHead style={columnStyles[0]}>
             <Indent level={parent?.level + 1}>
               <UserAvatar user={userReport.user}></UserAvatar>
             </Indent>
           </TableHead>
-          <TableHead className="whitespace-nowrap border text-left">
+          <TableHead
+            className="whitespace-nowrap text-left"
+            style={columnStyles[1]}
+          >
             <Indent level={parent?.level + 1} showArrows={false}>
               {toTitleCase(
                 userReport.user.firstName + " " + userReport.user.lastName
@@ -489,7 +537,7 @@ function UsersGroup({
               )
               .flat();
           })}
-        </tr>
+        </TableRow>
       ))}
     </>
   );
@@ -514,7 +562,7 @@ function Indent({
       {level > 0 && showArrows && (
         <div className="absolute top-0 left-0 h-[4em] w-2 border-l border-b border-gray-800/20 -translate-y-[3.2em] -translate-x-[0.3em]"></div>
       )}
-      <div className="relative z-10">{children}</div>
+      <div className="relative z-1">{children}</div>
     </div>
   );
 }

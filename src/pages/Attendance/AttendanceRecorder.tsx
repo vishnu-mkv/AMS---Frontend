@@ -149,8 +149,8 @@ function _AttendanceRecorder({
   const error = recordError || attendanceError || updateError || addError;
 
   return (
-    <Container className="pl-11">
-      <div className="flex gap-5 items-center -ml-11">
+    <Container className="md:pl-11">
+      <div className="flex gap-5 items-center md:-ml-11">
         <ChevronLeft
           className="cursor-pointer"
           onClick={() => {

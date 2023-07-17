@@ -7,7 +7,17 @@ import {
 import { TimeSlot } from "@/interfaces/schedule";
 import { GroupSummary } from "@/interfaces/user";
 import moment from "moment";
+import React, { useEffect } from "react";
 import { createContext, useContext, useMemo, useState } from "react";
+
+// a debounce function that will only execute the callback after the specified delay
+const debounce = (fn: Function, ms = 300) => {
+  let timeoutId: ReturnType<typeof setTimeout>;
+  return function (this: any, ...args: any[]) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn.apply(this, args), ms);
+  };
+};
 
 interface GroupLoadingState {
   groupId: string;
@@ -23,6 +33,11 @@ export interface GroupView {
 }
 
 type QueryWithoutGroup = Omit<AttendanceReportQueryForm, "group">;
+
+type TableCellRef = [
+  React.RefObject<HTMLTableCellElement>,
+  React.RefObject<HTMLTableCellElement>
+];
 
 interface AttendanceReportContextType {
   query: QueryWithoutGroup;
@@ -42,6 +57,9 @@ interface AttendanceReportContextType {
   dates: Date[];
   rootReport?: GroupReport;
   setRootReport: (report: GroupReport) => void;
+  cellRefs: TableCellRef;
+  rowStyles: [React.CSSProperties, React.CSSProperties, React.CSSProperties];
+  columnStyles: [React.CSSProperties, React.CSSProperties];
 }
 
 const AttendanceReportContext = createContext<
@@ -53,6 +71,82 @@ export const AttendanceReportProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const [rootReport, setRootReport] = useState<GroupReport>();
+
+  // refs for first 2 cells of first column
+  const cellRefs: TableCellRef = useMemo(() => {
+    return [
+      React.createRef<HTMLTableCellElement>(),
+      React.createRef<HTMLTableCellElement>(),
+    ];
+  }, []);
+
+  const [columnStyles, setColumnStyles] = useState<
+    [React.CSSProperties, React.CSSProperties]
+  >([{}, {}]);
+
+  const columnStylesObserver = useMemo(() => {
+    return new ResizeObserver(() => {
+      debounce(() => {
+        setColumnStyles([
+          {
+            left: 0,
+            position: "sticky",
+            zIndex: 2,
+          },
+          {
+            left: cellRefs[0].current?.offsetWidth || 0,
+            position: "sticky",
+            zIndex: 2,
+          },
+        ]);
+      }, 200)();
+    });
+  }, [cellRefs[0].current?.offsetLeft]);
+
+  const [rowStyles, setRowStyles] = useState<
+    [React.CSSProperties, React.CSSProperties, React.CSSProperties]
+  >([{}, {}, {}]);
+
+  const rowStylesObserver = useMemo(() => {
+    return new ResizeObserver(() => {
+      debounce(() => {
+        setRowStyles([
+          {
+            top: 0,
+            position: "sticky",
+            zIndex: 1,
+          },
+          {
+            top: cellRefs[0].current?.offsetHeight || 0,
+            position: "sticky",
+            zIndex: 1,
+          },
+          {
+            top:
+              (cellRefs[1].current?.offsetHeight || 0) +
+              (cellRefs[0].current?.offsetHeight || 0),
+            position: "sticky",
+            zIndex: 1,
+          },
+        ]);
+      }, 200)();
+    });
+  }, [cellRefs[0].current?.offsetTop, cellRefs[1].current?.offsetTop]);
+
+  useEffect(() => {
+    if (cellRefs[0].current && cellRefs[1].current) {
+      columnStylesObserver.observe(cellRefs[0].current);
+      rowStylesObserver.observe(cellRefs[0].current);
+      rowStylesObserver.observe(cellRefs[1].current);
+    }
+
+    return () => {
+      columnStylesObserver.disconnect();
+      rowStylesObserver.disconnect();
+    };
+  }, [cellRefs[0].current, cellRefs[1].current]);
+
   const [query, setQuery] = useState<QueryWithoutGroup>({});
 
   const [groupLoadingStates, setGroupLoadingStates] = useState<
@@ -60,8 +154,6 @@ export const AttendanceReportProvider = ({
   >([]);
 
   const [groupView, setGroupView] = useState<GroupView>();
-
-  const [rootReport, setRootReport] = useState<GroupReport>();
 
   const timeSlots = useMemo(() => {
     if (!rootReport) return [];
@@ -179,6 +271,9 @@ export const AttendanceReportProvider = ({
         dates,
         rootReport,
         setRootReport,
+        cellRefs,
+        rowStyles,
+        columnStyles,
       }}
     >
       {children}
