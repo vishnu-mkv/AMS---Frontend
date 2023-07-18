@@ -6,6 +6,7 @@ import {
 } from "@/interfaces/report";
 import { TimeSlot } from "@/interfaces/schedule";
 import { GroupSummary } from "@/interfaces/user";
+import { sortTimeSlots } from "@/lib/utils";
 import moment from "moment";
 import React, { useEffect } from "react";
 import { createContext, useContext, useMemo, useState } from "react";
@@ -157,7 +158,7 @@ export const AttendanceReportProvider = ({
 
   const timeSlots = useMemo(() => {
     if (!rootReport) return [];
-    return rootReport.timeSlots;
+    return sortTimeSlots(rootReport.timeSlots);
   }, [rootReport]);
 
   const attendanceStatuses = useMemo(() => {

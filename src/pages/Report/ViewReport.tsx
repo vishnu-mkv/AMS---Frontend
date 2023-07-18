@@ -209,6 +209,14 @@ function GroupReport() {
                 colSpan={timeSlots.length * attendanceStatuses.length}
                 key={date.toString()}
                 style={rowStyles[0]}
+                onMouseEnter={(e) => {
+                  // set a higher z-index so that the hover card is not hidden by the table
+                  e.currentTarget.style.zIndex = "100";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.zIndex =
+                    rowStyles[0].zIndex?.toString() || "";
+                }}
               >
                 <HoverCard>
                   <HoverCardTrigger>
@@ -244,6 +252,14 @@ function GroupReport() {
                     key={date.toString() + slot.id.toString()}
                     colSpan={attendanceStatuses.length}
                     style={rowStyles[1]}
+                    onMouseEnter={(e) => {
+                      // set a higher z-index so that the hover card is not hidden by the table
+                      e.currentTarget.style.zIndex = "100";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.zIndex =
+                        rowStyles[1].zIndex?.toString() || "";
+                    }}
                   >
                     <HoverCard>
                       <HoverCardTrigger>{index + 1}</HoverCardTrigger>
@@ -281,6 +297,14 @@ function GroupReport() {
                         status.id.toString()
                       }
                       style={rowStyles[2]}
+                      onMouseEnter={(e) => {
+                        // set a higher z-index so that the hover card is not hidden by the table
+                        e.currentTarget.style.zIndex = "100";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.zIndex =
+                          rowStyles[2].zIndex?.toString() || "";
+                      }}
                     >
                       <HoverCard>
                         <HoverCardTrigger>{status.shortName}</HoverCardTrigger>
@@ -422,9 +446,14 @@ function GroupRow({
         </TableHead>
 
         {dates.map((date) => {
-          return timeSlots
-            .map((slot) =>
-              attendanceStatuses.map((status) => (
+          return timeSlots.map((slot) => {
+            const anyStatusAvailable = attendanceStatuses.some((status) => {
+              const key = getKey(date, slot.id, status.id);
+              return attendance[key] !== undefined;
+            });
+
+            return attendanceStatuses
+              .map((status) => (
                 <TableCell
                   key={
                     "val" +
@@ -435,11 +464,12 @@ function GroupRow({
                   className="text-center"
                 >
                   {/* {getKey(date, slot.id, status.id)} */}
-                  {attendance[getKey(date, slot.id, status.id)] ?? ""}
+                  {attendance[getKey(date, slot.id, status.id)] ??
+                    (anyStatusAvailable ? 0 : "")}
                 </TableCell>
               ))
-            )
-            .flat();
+              .flat();
+          });
         })}
       </TableRow>
       {current.children.map((x) => (
