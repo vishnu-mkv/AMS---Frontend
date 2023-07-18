@@ -8,10 +8,10 @@ import { GroupSummary, GroupType } from "@/interfaces/user";
 import GroupList from "../Groups/GroupList";
 import Loading from "@/components/Loading";
 import { ErrorMessage } from "@/components/ui/Alert";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useGetReportQuery } from "@/features/api/attendanceSlice";
 import Header from "@/components/ui/header";
-import { ScrollArea } from "@/components/ui/scroll-area";
+// import { ScrollArea } from "@/components/ui/scroll-area";
 import moment from "moment";
 import {
   Table,
